@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PM Compass — Learn Project Management & Find Your Method</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.4s ease-in; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .progress-bar { transition: width 0.6s ease; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+/* ============================================================
+   DATA — Educational Content
+   ============================================================ */
+
+const PM_CONCEPTS = [
+  {
+    id: "what-is-pm",
+    title: "What Is Project Management?",
+    icon: "🎯",
+    color: "blue",
+    summary: "A project is temporary, unique, and goal-oriented. Project management is the discipline of planning, executing, and closing that work.",
+    bullets: [
+      "Temporary — has a defined start and end date",
+      "Unique — produces a distinct product, service, or result",
+      "Goal-oriented — driven by specific objectives and success criteria",
+      "Constrained — bound by scope, time, and cost",
+    ],
+    detail: "Project management brings structure to complex, one-time efforts. Without it, teams lack direction, budgets overrun, and deliverables miss the mark. A project ends when its objectives are achieved, when it becomes clear they cannot be achieved, or when the need no longer exists.",
+  },
+  {
+    id: "pm-role",
+    title: "The Project Manager's Role",
+    icon: "👩‍💼",
+    color: "violet",
+    summary: "The PM is accountable for delivering the project on time, on budget, and within scope — while leading the team and keeping stakeholders informed.",
+    bullets: [
+      "Leadership & motivation — inspire the team toward a shared goal",
+      "Communication — tailor messages to different audiences",
+      "Organization — plan work, track progress, manage dependencies",
+      "Problem solving — identify issues early and adapt",
+      "Adaptability — pivot when circumstances change",
+    ],
+    detail: "A project manager rarely has direct authority over team members — they lead through influence, clarity, and trust. The best PMs are proactive communicators who surface problems before they become crises.",
+  },
+  {
+    id: "triple-constraint",
+    title: "The Triple Constraint",
+    icon: "🔺",
+    color: "amber",
+    summary: "Every project is bounded by Scope, Time, and Cost. Changing one always affects the others.",
+    bullets: [
+      "Scope — the work that must be done to deliver the project",
+      "Time — the schedule and deadlines",
+      "Cost — budget, resources, and effort",
+      "Quality sits at the center — all three constrain it",
+    ],
+    detail: "If a stakeholder asks you to add features (scope), something must give: the deadline moves out (time), the budget increases (cost), or quality is reduced. Making this trade-off visible is one of the PM's most important jobs. Some frameworks add a fourth vertex — Quality or Risk — creating a diamond or pentagon model.",
+  },
+  {
+    id: "lifecycle",
+    title: "Project Life Cycle",
+    icon: "🔄",
+    color: "green",
+    summary: "Projects move through four phases: Initiation → Planning → Execution → Closing.",
+    phases: [
+      { name: "Initiation", color: "bg-blue-100 text-blue-800", activities: ["Define the project goal", "Identify stakeholders", "Assess feasibility", "Create the Project Charter"] },
+      { name: "Planning", color: "bg-violet-100 text-violet-800", activities: ["Define scope in detail", "Build the schedule (WBS, Gantt)", "Estimate budget", "Plan for risks and communications"] },
+      { name: "Execution", color: "bg-green-100 text-green-800", activities: ["Direct and manage project work", "Develop and lead the team", "Manage stakeholder expectations", "Implement quality assurance"] },
+      { name: "Closing", color: "bg-amber-100 text-amber-800", activities: ["Obtain formal acceptance", "Release resources", "Document lessons learned", "Archive project records"] },
+    ],
+  },
+  {
+    id: "stakeholders",
+    title: "Stakeholders & Stakeholder Management",
+    icon: "🤝",
+    color: "pink",
+    summary: "A stakeholder is anyone who can affect or be affected by your project. Managing their expectations is critical to success.",
+    bullets: [
+      "Identify — list everyone with a stake (sponsors, users, regulators, team)",
+      "Analyze — assess their influence and interest",
+      "Plan — decide how and how often to engage each group",
+      "Engage — communicate proactively, not reactively",
+    ],
+    detail: "The Stakeholder Register is a living document that tracks each stakeholder's role, interests, influence level, and preferred communication style. High-influence, high-interest stakeholders need the most attention. Ignoring a powerful stakeholder is one of the most common reasons projects fail.",
+  },
+  {
+    id: "org-structures",
+    title: "Organizational Structures",
+    icon: "🏗️",
+    color: "cyan",
+    summary: "The structure of your organization shapes how much authority a PM has and how resources are shared.",
+    orgs: [
+      {
+        name: "Functional",
+        desc: "Work organized by department (Engineering, Marketing, etc.). PM authority is low.",
+        pros: ["Clear career paths", "Deep specialist expertise", "Stable resource pools"],
+        cons: ["Siloed communication", "PM has little power", "Slow cross-department decisions"],
+      },
+      {
+        name: "Projectized",
+        desc: "Teams built around projects. PM has high authority and full resource control.",
+        pros: ["Strong PM authority", "Team focus on project goals", "Fast decision-making"],
+        cons: ["Duplication of resources", "Uncertainty after project ends", "Less skill-building"],
+      },
+      {
+        name: "Matrix",
+        desc: "Blend of functional and projectized. PM shares authority with functional managers.",
+        pros: ["Flexible resource sharing", "PM has formal role", "Expertise preserved"],
+        cons: ["Two bosses for team members", "Complex reporting", "Potential for conflict"],
+      },
+    ],
+  },
+  {
+    id: "methodologies",
+    title: "Waterfall vs Agile",
+    icon: "⚡",
+    color: "indigo",
+    summary: "Waterfall is sequential and plan-driven. Agile is iterative and change-friendly. Hybrid blends both.",
+    methods: [
+      {
+        name: "Waterfall",
+        icon: "💧",
+        when: "Requirements are stable, deliverable is well-defined, compliance is critical",
+        how: "Linear phases: Requirements → Design → Build → Test → Deploy. Each phase completes before the next begins.",
+        examples: "Construction, manufacturing, government contracts, regulated industries",
+      },
+      {
+        name: "Agile",
+        icon: "🔁",
+        when: "Requirements evolve, fast feedback loops matter, product is being discovered",
+        how: "Short sprints (1–4 weeks) delivering working increments. Continuous planning and retrospectives.",
+        examples: "Software development, product design, marketing campaigns",
+      },
+      {
+        name: "Hybrid",
+        icon: "🔀",
+        when: "Some parts are fixed (compliance, architecture) while others are exploratory",
+        how: "Use Waterfall for stable phases (e.g. infrastructure) and Agile for dynamic phases (e.g. features).",
+        examples: "Digital transformation, ERP implementations, regulated software",
+      },
+    ],
+  },
+  {
+    id: "risk",
+    title: "Risk Management",
+    icon: "⚠️",
+    color: "red",
+    summary: "Risk management is the process of identifying, analyzing, and responding to potential threats — before they become problems.",
+    bullets: [
+      "Identify — brainstorm what could go wrong (and what could go better than expected)",
+      "Analyze — assess likelihood and impact (High/Medium/Low matrix)",
+      "Plan responses — Avoid, Transfer, Mitigate, or Accept each risk",
+      "Monitor — track risks throughout the project; new ones emerge",
+    ],
+    detail: "A Risk Register documents every known risk with its probability, impact, response strategy, and owner. Risks that materialize become issues — and issues need a separate log. The goal isn't to eliminate all risk; it's to make informed decisions about which risks to accept.",
+  },
+  {
+    id: "smart-goals",
+    title: "SMART Goals",
+    icon: "🎯",
+    color: "teal",
+    summary: "Good project objectives are SMART: Specific, Measurable, Achievable, Relevant, and Time-bound.",
+    bullets: [
+      "Specific — clear and unambiguous (not 'improve the website')",
+      "Measurable — you can tell when you've achieved it (KPIs, metrics)",
+      "Achievable — realistic given your constraints",
+      "Relevant — aligned to organizational strategy",
+      "Time-bound — has a deadline ('by Q3' not 'someday')",
+    ],
+    detail: "Example of a weak goal: 'Make the app faster.' Example of a SMART goal: 'Reduce average page load time from 4.2 s to under 2 s on mobile, as measured by Lighthouse, by August 31.'",
+  },
+  {
+    id: "key-docs",
+    title: "Key Project Documents",
+    icon: "📄",
+    color: "orange",
+    summary: "Four documents form the backbone of most projects: Charter, Stakeholder Register, Communication Plan, and Risk Register.",
+    docs: [
+      { name: "Project Charter", desc: "Formally authorizes the project. Names the PM, states objectives, high-level scope, budget, and key milestones. Created in Initiation." },
+      { name: "Stakeholder Register", desc: "Lists all stakeholders with their role, interest level, influence, and engagement strategy. Created early and updated throughout." },
+      { name: "Communication Plan", desc: "Defines who gets what information, how often, and via which channel. Prevents both over- and under-communication." },
+      { name: "Risk Register", desc: "Logs all identified risks with probability, impact, owner, and response strategy. A living document updated at every project review." },
+    ],
+  },
+];
+
+/* ============================================================
+   DATA — Assessment Questions
+   ============================================================ */
+
+/*
+  Scoring system:
+  Each answer carries a weight for [waterfall, agile, hybrid].
+  We sum across all questions, then normalize to percentages.
+  The highest score wins the recommendation.
+*/
+const QUESTIONS = [
+  {
+    id: "requirements",
+    text: "How clear and stable are your project requirements?",
+    subtitle: "Think about how well you understand what needs to be built before work starts.",
+    options: [
+      { label: "Very clear and fixed — unlikely to change", weights: [3, 0, 1] },
+      { label: "Mostly clear with some expected adjustments", weights: [2, 1, 2] },
+      { label: "Somewhat defined but expect significant changes", weights: [0, 2, 2] },
+      { label: "Requirements will evolve as we learn more", weights: [0, 3, 1] },
+    ],
+  },
+  {
+    id: "flexibility",
+    text: "How important is flexibility to change direction mid-project?",
+    subtitle: "If priorities shift, how critical is it to adapt quickly?",
+    options: [
+      { label: "Not important — we need to stick to the original plan", weights: [3, 0, 1] },
+      { label: "Somewhat important — some flexibility is nice to have", weights: [2, 1, 2] },
+      { label: "Very important — we expect and welcome changes", weights: [0, 2, 2] },
+      { label: "Essential — our success depends on rapid adaptation", weights: [0, 3, 0] },
+    ],
+  },
+  {
+    id: "industry",
+    text: "How predictable is your industry or type of work?",
+    subtitle: "Industries like construction follow set processes; software often does not.",
+    options: [
+      { label: "Highly predictable — construction, manufacturing, engineering", weights: [3, 0, 1] },
+      { label: "Mostly predictable with some variability", weights: [2, 1, 2] },
+      { label: "Moderately unpredictable — some experimentation needed", weights: [0, 2, 2] },
+      { label: "Highly unpredictable — software, startups, research", weights: [0, 3, 0] },
+    ],
+  },
+  {
+    id: "speed",
+    text: "How quickly do you need to deliver value to stakeholders?",
+    subtitle: "Do stakeholders need to see results in weeks, or can they wait for a complete deliverable?",
+    options: [
+      { label: "We deliver everything at the end — that's expected and acceptable", weights: [3, 0, 1] },
+      { label: "We can wait for most of it, but want some early milestones", weights: [2, 1, 2] },
+      { label: "We need working increments every few weeks", weights: [0, 2, 2] },
+      { label: "We need continuous delivery and rapid feedback loops", weights: [0, 3, 0] },
+    ],
+  },
+  {
+    id: "stakeholder-involvement",
+    text: "How involved are stakeholders/customers during the work?",
+    subtitle: "Will clients review progress regularly, or do they prefer to see the final result?",
+    options: [
+      { label: "Minimal — they review the final deliverable only", weights: [3, 0, 1] },
+      { label: "Occasional — milestone reviews a few times", weights: [2, 1, 2] },
+      { label: "Frequent — they're involved in sprint reviews or demos", weights: [0, 2, 2] },
+      { label: "Continuous — they're practically part of the team", weights: [0, 3, 0] },
+    ],
+  },
+  {
+    id: "team-size",
+    text: "How large and distributed is your team?",
+    subtitle: "Team size and location affect communication overhead and process needs.",
+    options: [
+      { label: "Large (20+) and/or highly distributed across time zones", weights: [2, 0, 2] },
+      { label: "Medium (10–20), partially distributed", weights: [1, 1, 3] },
+      { label: "Small (5–10), mostly co-located", weights: [0, 2, 2] },
+      { label: "Very small (2–5), tight-knit and co-located", weights: [0, 3, 0] },
+    ],
+  },
+  {
+    id: "upfront-planning",
+    text: "How structured does your planning need to be upfront?",
+    subtitle: "Some projects need a full plan before work starts; others plan as they go.",
+    options: [
+      { label: "Comprehensive upfront plan is required (e.g. regulatory, contracts)", weights: [3, 0, 1] },
+      { label: "Solid upfront plan with room to adjust", weights: [2, 1, 2] },
+      { label: "High-level plan upfront; details emerge during execution", weights: [0, 2, 2] },
+      { label: "Minimal upfront planning — we adapt each cycle", weights: [0, 3, 0] },
+    ],
+  },
+];
+
+/* ============================================================
+   SCORING ENGINE
+   ============================================================ */
+
+function computeScores(answers) {
+  // answers: { questionId: optionIndex }
+  let wf = 0, ag = 0, hy = 0;
+
+  QUESTIONS.forEach(q => {
+    const idx = answers[q.id];
+    if (idx === undefined) return;
+    const [w, a, h] = q.options[idx].weights;
+    wf += w; ag += a; hy += h;
+  });
+
+  const total = wf + ag + hy || 1;
+  const pct = {
+    waterfall: Math.round((wf / total) * 100),
+    agile: Math.round((ag / total) * 100),
+    hybrid: Math.round((hy / total) * 100),
+  };
+
+  // Normalize so they sum to 100
+  const diff = 100 - (pct.waterfall + pct.agile + pct.hybrid);
+  const top = Object.entries(pct).sort((a, b) => b[1] - a[1])[0][0];
+  pct[top] += diff;
+
+  const recommended = Object.entries(pct).sort((a, b) => b[1] - a[1])[0][0];
+
+  return { scores: pct, recommended };
+}
+
+const METHODOLOGY_DETAILS = {
+  waterfall: {
+    name: "Waterfall",
+    icon: "💧",
+    color: "blue",
+    tagline: "Plan it completely, then build it sequentially.",
+    why: "Your answers indicate stable requirements, a predictable environment, and a need for comprehensive upfront planning. Waterfall's sequential, phase-by-phase approach will give your team clear milestones, defined deliverables, and a controlled path from start to finish.",
+    characteristics: [
+      "Sequential phases with formal gates between each",
+      "Comprehensive documentation before work begins",
+      "Changes are controlled through a formal change process",
+      "Progress measured against the original plan",
+      "Customer involvement concentrated at the beginning and end",
+    ],
+    bestFor: "Construction, manufacturing, government contracts, regulated industries, fixed-price contracts",
+    nextSteps: [
+      "Create a Project Charter to formally authorize the project and name the PM",
+      "Conduct thorough requirements gathering — document everything in a Requirements Specification",
+      "Build a Work Breakdown Structure (WBS) to decompose all deliverables",
+      "Develop a full project schedule with Gantt chart and critical path analysis",
+      "Establish a formal Change Control Board to manage any scope changes",
+    ],
+    orgSuggestion: "A Functional or Matrix structure works well — Waterfall projects benefit from deep specialist expertise organized by department.",
+  },
+  agile: {
+    name: "Agile",
+    icon: "🔁",
+    color: "green",
+    tagline: "Deliver in sprints, learn as you go.",
+    why: "Your answers point to evolving requirements, a need for flexibility, and frequent stakeholder feedback. Agile's iterative sprint model means you'll deliver working value every 2–4 weeks, adapt to change quickly, and keep stakeholders closely engaged throughout.",
+    characteristics: [
+      "Work delivered in short sprints (typically 1–4 weeks)",
+      "Product backlog prioritized and refined continuously",
+      "Cross-functional, self-organizing teams",
+      "Daily standups to surface blockers immediately",
+      "Retrospectives after each sprint to improve the process",
+    ],
+    bestFor: "Software development, product design, digital marketing, any work where requirements emerge through discovery",
+    nextSteps: [
+      "Adopt a framework: Scrum (most common), Kanban (flow-based), or SAFe (large teams)",
+      "Create a Product Backlog — a prioritized list of user stories and features",
+      "Define your Definition of Done — the quality bar every item must meet before release",
+      "Schedule your first Sprint Planning session and kick off your first 2-week sprint",
+      "Set up a retrospective cadence — reflecting after every sprint compounds improvement over time",
+    ],
+    orgSuggestion: "A Projectized or strong Matrix structure gives Agile teams the autonomy they need. Avoid purely functional structures — silos kill Agile.",
+  },
+  hybrid: {
+    name: "Hybrid",
+    icon: "🔀",
+    color: "purple",
+    tagline: "Plan what you know. Discover what you don't.",
+    why: "Your answers show a mix of stable and dynamic elements. A Hybrid approach lets you apply Waterfall's rigor where requirements are fixed (e.g. compliance, infrastructure, contracts) and Agile's flexibility where discovery is needed (e.g. user-facing features, integrations).",
+    characteristics: [
+      "Fixed phases for well-understood deliverables (Waterfall-style)",
+      "Iterative sprints for exploratory or changing work (Agile-style)",
+      "Formal milestones and reporting alongside sprint demos",
+      "Governance structured for predictability, execution structured for flexibility",
+      "Risk management draws from both approaches",
+    ],
+    bestFor: "ERP implementations, digital transformations, regulated software, projects with a hardware + software component",
+    nextSteps: [
+      "Map your project: identify which workstreams are predictable (use Waterfall) and which are exploratory (use Agile)",
+      "Create a Project Charter covering the full scope, then build an Agile backlog for the iterative parts",
+      "Establish a master schedule for major milestones alongside a sprint cadence for flexible work",
+      "Define clear interfaces between the sequential and iterative streams — manage dependencies carefully",
+      "Align governance early: agree with stakeholders on which reporting is phase-based and which is sprint-based",
+    ],
+    orgSuggestion: "A Matrix structure is typically the best fit — you need both functional expertise (Waterfall phases) and a dedicated project team (Agile sprints).",
+  },
+};
+
+/* ============================================================
+   COMPONENTS — Shared UI
+   ============================================================ */
+
+function Badge({ color, children }) {
+  const colorMap = {
+    blue: "bg-blue-100 text-blue-800",
+    green: "bg-green-100 text-green-800",
+    purple: "bg-purple-100 text-purple-800",
+    amber: "bg-amber-100 text-amber-800",
+    red: "bg-red-100 text-red-800",
+    violet: "bg-violet-100 text-violet-800",
+    pink: "bg-pink-100 text-pink-800",
+    cyan: "bg-cyan-100 text-cyan-800",
+    indigo: "bg-indigo-100 text-indigo-800",
+    teal: "bg-teal-100 text-teal-800",
+    orange: "bg-orange-100 text-orange-800",
+  };
+  return (
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${colorMap[color] || "bg-slate-100 text-slate-700"}`}>
+      {children}
+    </span>
+  );
+}
+
+function Card({ children, className = "" }) {
+  return (
+    <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Navigation
+   ============================================================ */
+
+function Nav({ activeTab, setActiveTab }) {
+  const tabs = [
+    { id: "learn", label: "📚 Learn PM", short: "Learn" },
+    { id: "assess", label: "🧭 Find Your Method", short: "Assess" },
+  ];
+  return (
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🧭</span>
+          <span className="font-bold text-slate-900 text-lg tracking-tight">PM Compass</span>
+        </div>
+        <nav className="flex gap-1">
+          {tabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === t.id
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <span className="hidden sm:inline">{t.label}</span>
+              <span className="sm:hidden">{t.short}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Learn Section
+   ============================================================ */
+
+function ConceptCard({ concept }) {
+  const [open, setOpen] = useState(false);
+
+  const colorBorderMap = {
+    blue: "border-l-blue-500",
+    violet: "border-l-violet-500",
+    amber: "border-l-amber-500",
+    green: "border-l-green-500",
+    pink: "border-l-pink-500",
+    cyan: "border-l-cyan-500",
+    indigo: "border-l-indigo-500",
+    red: "border-l-red-500",
+    teal: "border-l-teal-500",
+    orange: "border-l-orange-500",
+  };
+
+  return (
+    <Card className={`border-l-4 ${colorBorderMap[concept.color] || "border-l-slate-400"}`}>
+      <button
+        className="w-full text-left p-5 flex items-start gap-4"
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="text-3xl flex-shrink-0">{concept.icon}</span>
+        <div className="flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-semibold text-slate-900 text-base">{concept.title}</h3>
+            <span className={`text-slate-400 text-lg transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+          </div>
+          <p className="text-slate-600 text-sm mt-1">{concept.summary}</p>
+        </div>
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 border-t border-slate-100 pt-4 fade-in">
+          {/* Bullets */}
+          {concept.bullets && (
+            <ul className="space-y-2 mb-4">
+              {concept.bullets.map((b, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                  <span className="text-blue-500 mt-0.5">•</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Detail paragraph */}
+          {concept.detail && (
+            <p className="text-sm text-slate-600 bg-slate-50 rounded-xl p-3 leading-relaxed">{concept.detail}</p>
+          )}
+
+          {/* Lifecycle phases */}
+          {concept.phases && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {concept.phases.map((ph, i) => (
+                <div key={i} className={`rounded-xl p-3 ${ph.color}`}>
+                  <div className="font-semibold text-sm mb-2">{i + 1}. {ph.name}</div>
+                  <ul className="space-y-1">
+                    {ph.activities.map((a, j) => (
+                      <li key={j} className="text-xs flex gap-1"><span>→</span><span>{a}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Org structures */}
+          {concept.orgs && (
+            <div className="space-y-3">
+              {concept.orgs.map((org, i) => (
+                <div key={i} className="border border-slate-200 rounded-xl p-3">
+                  <div className="font-semibold text-sm text-slate-900 mb-1">{org.name}</div>
+                  <p className="text-xs text-slate-600 mb-2">{org.desc}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <div className="text-xs font-medium text-green-700 mb-1">✓ Pros</div>
+                      {org.pros.map((p, j) => <div key={j} className="text-xs text-slate-600">• {p}</div>)}
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-red-600 mb-1">✗ Cons</div>
+                      {org.cons.map((c, j) => <div key={j} className="text-xs text-slate-600">• {c}</div>)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Methodologies */}
+          {concept.methods && (
+            <div className="space-y-3">
+              {concept.methods.map((m, i) => (
+                <div key={i} className="border border-slate-200 rounded-xl p-3">
+                  <div className="font-semibold text-sm text-slate-900 mb-1">{m.icon} {m.name}</div>
+                  <div className="text-xs text-slate-600 space-y-1">
+                    <div><span className="font-medium text-slate-700">When: </span>{m.when}</div>
+                    <div><span className="font-medium text-slate-700">How: </span>{m.how}</div>
+                    <div><span className="font-medium text-slate-700">Examples: </span>{m.examples}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Key docs */}
+          {concept.docs && (
+            <div className="space-y-2">
+              {concept.docs.map((d, i) => (
+                <div key={i} className="border border-slate-200 rounded-xl p-3">
+                  <div className="font-semibold text-sm text-slate-900 mb-1">📄 {d.name}</div>
+                  <p className="text-xs text-slate-600">{d.desc}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function LearnSection() {
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Project Management Fundamentals</h1>
+        <p className="text-slate-500 text-lg">Tap any card to expand and dive deeper into each topic.</p>
+      </div>
+      <div className="space-y-3">
+        {PM_CONCEPTS.map(c => <ConceptCard key={c.id} concept={c} />)}
+      </div>
+      <div className="mt-10 text-center">
+        <p className="text-slate-500 text-sm mb-3">Ready to find the right methodology for your team?</p>
+        <button
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+          onClick={() => document.querySelector('[data-tab="assess"]')?.click()}
+        >
+          Take the Assessment →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Assessment
+   ============================================================ */
+
+function ProgressBar({ current, total }) {
+  const pct = Math.round((current / total) * 100);
+  return (
+    <div className="mb-6">
+      <div className="flex justify-between text-xs text-slate-500 mb-1">
+        <span>Question {current} of {total}</span>
+        <span>{pct}% complete</span>
+      </div>
+      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-blue-600 rounded-full progress-bar"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function AssessmentStep({ question, answer, onAnswer, onBack, onNext, stepIdx, total }) {
+  return (
+    <div className="fade-in">
+      <ProgressBar current={stepIdx + 1} total={total} />
+      <Card className="p-6">
+        <div className="mb-1">
+          <Badge color="blue">Question {stepIdx + 1}</Badge>
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 mt-2 mb-1">{question.text}</h2>
+        <p className="text-slate-500 text-sm mb-6">{question.subtitle}</p>
+        <div className="space-y-3">
+          {question.options.map((opt, i) => (
+            <button
+              key={i}
+              onClick={() => onAnswer(i)}
+              className={`w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium ${
+                answer === i
+                  ? "border-blue-500 bg-blue-50 text-blue-900"
+                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+              }`}
+            >
+              <span className={`inline-block w-6 h-6 rounded-full border-2 mr-3 text-center text-xs leading-5 flex-shrink-0 ${
+                answer === i ? "border-blue-500 bg-blue-500 text-white" : "border-slate-300"
+              }`} style={{display:"inline-flex",alignItems:"center",justifyContent:"center"}}>
+                {answer === i ? "✓" : String.fromCharCode(65 + i)}
+              </span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </Card>
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={onBack}
+          disabled={stepIdx === 0}
+          className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          ← Back
+        </button>
+        <button
+          onClick={onNext}
+          disabled={answer === undefined}
+          className="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {stepIdx === total - 1 ? "See My Results →" : "Next →"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Results
+   ============================================================ */
+
+function ScoreBar({ label, pct, color, isTop }) {
+  const colorMap = {
+    blue: { bar: "bg-blue-500", text: "text-blue-700" },
+    green: { bar: "bg-green-500", text: "text-green-700" },
+    purple: { bar: "bg-purple-500", text: "text-purple-700" },
+  };
+  const c = colorMap[color] || colorMap.blue;
+  return (
+    <div className="mb-3">
+      <div className="flex justify-between items-center mb-1">
+        <span className={`text-sm font-medium ${isTop ? c.text : "text-slate-600"}`}>
+          {isTop ? "★ " : ""}{label}
+        </span>
+        <span className={`text-sm font-bold ${isTop ? c.text : "text-slate-500"}`}>{pct}%</span>
+      </div>
+      <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full progress-bar ${isTop ? c.bar : "bg-slate-300"}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ResultsScreen({ scores, recommended, answers, onRetake }) {
+  const detail = METHODOLOGY_DETAILS[recommended];
+  const colorMap = {
+    blue: { header: "bg-blue-600", badge: "bg-blue-100 text-blue-800", ring: "ring-blue-300" },
+    green: { header: "bg-green-600", badge: "bg-green-100 text-green-800", ring: "ring-green-300" },
+    purple: { header: "bg-purple-600", badge: "bg-purple-100 text-purple-800", ring: "ring-purple-300" },
+  };
+  const c = colorMap[detail.color] || colorMap.blue;
+
+  const methodColors = { waterfall: "blue", agile: "green", hybrid: "purple" };
+
+  return (
+    <div className="fade-in space-y-5">
+      {/* Hero result card */}
+      <Card className={`overflow-hidden`}>
+        <div className={`${c.header} p-6 text-white`}>
+          <div className="text-5xl mb-2">{detail.icon}</div>
+          <div className="text-sm font-medium opacity-80 mb-1">Your Recommended Methodology</div>
+          <h2 className="text-3xl font-bold mb-1">{detail.name}</h2>
+          <p className="opacity-90 text-sm">{detail.tagline}</p>
+        </div>
+        <div className="p-6">
+          <h3 className="font-semibold text-slate-900 mb-2">Why this fits you</h3>
+          <p className="text-slate-600 text-sm leading-relaxed">{detail.why}</p>
+        </div>
+      </Card>
+
+      {/* Confidence breakdown */}
+      <Card className="p-5">
+        <h3 className="font-semibold text-slate-900 mb-1">Confidence Breakdown</h3>
+        <p className="text-xs text-slate-500 mb-4">Based on your 7 answers — scores reflect how well each methodology matches your context.</p>
+        <ScoreBar label="Waterfall" pct={scores.waterfall} color="blue" isTop={recommended === "waterfall"} />
+        <ScoreBar label="Agile" pct={scores.agile} color="green" isTop={recommended === "agile"} />
+        <ScoreBar label="Hybrid" pct={scores.hybrid} color="purple" isTop={recommended === "hybrid"} />
+      </Card>
+
+      {/* Key characteristics */}
+      <Card className="p-5">
+        <h3 className="font-semibold text-slate-900 mb-3">Key Characteristics</h3>
+        <ul className="space-y-2">
+          {detail.characteristics.map((ch, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+              <span className="text-blue-500 mt-0.5 flex-shrink-0">✓</span>
+              <span>{ch}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 p-3 bg-slate-50 rounded-xl">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Best For</div>
+          <p className="text-sm text-slate-700">{detail.bestFor}</p>
+        </div>
+      </Card>
+
+      {/* Next steps */}
+      <Card className="p-5">
+        <h3 className="font-semibold text-slate-900 mb-3">🚀 Your Next Steps</h3>
+        <ol className="space-y-3">
+          {detail.nextSteps.map((step, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <span className={`flex-shrink-0 w-6 h-6 rounded-full ${c.header} text-white text-xs font-bold flex items-center justify-center`}>{i + 1}</span>
+              <p className="text-sm text-slate-700 leading-relaxed">{step}</p>
+            </li>
+          ))}
+        </ol>
+      </Card>
+
+      {/* Org structure suggestion */}
+      <Card className="p-5 border-l-4 border-l-amber-400">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">🏗️</span>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Organizational Structure Suggestion</h3>
+            <p className="text-sm text-slate-600">{detail.orgSuggestion}</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Retake */}
+      <div className="text-center pt-2 pb-8">
+        <button
+          onClick={onRetake}
+          className="px-6 py-3 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm"
+        >
+          ↺ Retake Assessment
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Assessment Container
+   ============================================================ */
+
+function AssessSection() {
+  const [step, setStep] = useState("intro"); // "intro" | number | "results"
+  const [answers, setAnswers] = useState({});
+  const [result, setResult] = useState(null);
+
+  const startAssessment = () => setStep(0);
+
+  const handleAnswer = (questionId, optIdx) => {
+    setAnswers(prev => ({ ...prev, [questionId]: optIdx }));
+  };
+
+  const handleNext = () => {
+    if (step < QUESTIONS.length - 1) {
+      setStep(s => s + 1);
+    } else {
+      // Compute results
+      const { scores, recommended } = computeScores(answers);
+      setResult({ scores, recommended });
+      setStep("results");
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 0) setStep(s => s - 1);
+  };
+
+  const retake = () => {
+    setAnswers({});
+    setResult(null);
+    setStep("intro");
+  };
+
+  if (step === "results" && result) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <ResultsScreen
+          scores={result.scores}
+          recommended={result.recommended}
+          answers={answers}
+          onRetake={retake}
+        />
+      </div>
+    );
+  }
+
+  if (step === "intro") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-4">🧭</div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-3">Find Your Method</h1>
+          <p className="text-slate-500 text-lg max-w-md mx-auto">
+            Answer 7 quick questions about your company and projects. We'll recommend the best project management methodology — and explain why.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          {[
+            { icon: "💧", name: "Waterfall", desc: "Sequential, plan-driven" },
+            { icon: "🔁", name: "Agile", desc: "Iterative, flexible" },
+            { icon: "🔀", name: "Hybrid", desc: "Best of both" },
+          ].map(m => (
+            <Card key={m.name} className="p-4 text-center">
+              <div className="text-3xl mb-1">{m.icon}</div>
+              <div className="font-semibold text-slate-900 text-sm">{m.name}</div>
+              <div className="text-xs text-slate-500">{m.desc}</div>
+            </Card>
+          ))}
+        </div>
+        <div className="text-center">
+          <button
+            onClick={startAssessment}
+            className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            Start Assessment →
+          </button>
+          <p className="text-xs text-slate-400 mt-3">Takes about 2 minutes · No account required</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Question step
+  const question = QUESTIONS[step];
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <AssessmentStep
+        question={question}
+        answer={answers[question.id]}
+        onAnswer={idx => handleAnswer(question.id, idx)}
+        onBack={handleBack}
+        onNext={handleNext}
+        stepIdx={step}
+        total={QUESTIONS.length}
+      />
+    </div>
+  );
+}
+
+/* ============================================================
+   ROOT APP
+   ============================================================ */
+
+function App() {
+  const [activeTab, setActiveTab] = useState("learn");
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {/* Hidden buttons for cross-tab navigation */}
+      <button data-tab="assess" onClick={() => setActiveTab("assess")} className="hidden" />
+
+      <main>
+        {activeTab === "learn" ? <LearnSection /> : <AssessSection />}
+      </main>
+
+      <footer className="border-t border-slate-200 bg-white mt-8 py-6 text-center text-xs text-slate-400">
+        PM Compass · Built on standard PM foundations (PMI/PMBOK, Agile Manifesto) · For educational use
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
