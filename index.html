@@ -19,11 +19,21 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="emailjs.min.js"></script>
+  <script>
+    emailjs.init({ publicKey: "aPCkCIAtYZLC5MKX8" });
+  </script>
   <style>
     body { font-family: 'Segoe UI', system-ui, sans-serif; }
     .fade-in { animation: fadeIn 0.4s ease-in; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
     .progress-bar { transition: width 0.6s ease; }
+    @media print {
+      body * { visibility: hidden; }
+      #charter-print-area, #charter-print-area *,
+      #scope-print-area, #scope-print-area * { visibility: visible; }
+      #charter-print-area, #scope-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
@@ -403,6 +413,219 @@ const METHODOLOGY_DETAILS = {
 };
 
 /* ============================================================
+   DATA — Project Charter
+   ============================================================ */
+
+const CHARTER_TIPS = {
+  waterfall: {
+    purpose: "Waterfall charters favor a fully-formed business case up front — leave little ambiguity about why the project exists.",
+    objectives: "State every objective now; Waterfall assumes objectives won't shift once planning begins.",
+    inScope: "Be exhaustive. Scope changes later require a formal change request, so capture everything you can today.",
+    milestones: "List every phase gate (Requirements sign-off, Design approval, Build complete, Test complete, Deployment) with a firm date.",
+    risks: "Document risks thoroughly now — Waterfall has limited room to absorb surprises mid-project.",
+  },
+  agile: {
+    purpose: "Keep this directional — Agile charters set the 'why' clearly but expect the 'how' to be discovered through iteration.",
+    objectives: "Frame objectives as outcomes, not fixed deliverables. Your backlog will translate these into stories sprint by sprint.",
+    inScope: "Keep this high-level. Detailed scope will emerge and evolve in the product backlog, not the charter.",
+    milestones: "List major release checkpoints or sprint themes rather than a fixed task-by-task schedule.",
+    risks: "Focus on risks that threaten the product vision — day-to-day risks will surface and get handled sprint to sprint.",
+  },
+  hybrid: {
+    purpose: "Separate the 'why' for your fixed workstreams from the 'why' for your exploratory ones if they differ.",
+    objectives: "Mark which objectives are fixed (Waterfall-style) and which are expected to evolve (Agile-style).",
+    inScope: "Define fixed-scope workstreams in detail; leave exploratory workstreams high-level and backlog-driven.",
+    milestones: "Combine formal phase gates for predictable workstreams with sprint/release checkpoints for iterative ones.",
+    risks: "Cover both plan-driven risks (schedule, compliance) and discovery risks (unclear requirements, changing priorities).",
+  },
+};
+
+const CHARTER_FIELDS = [
+  { key: "title", label: "Project Title", type: "input", required: true, placeholder: "e.g. Customer Portal Redesign" },
+  { key: "pmName", label: "Project Manager", type: "input", required: true, placeholder: "Who is authorized to lead this project?" },
+  { key: "sponsor", label: "Sponsor / Executive Sponsor", type: "input", placeholder: "Who authorized and funds this project?" },
+  { key: "purpose", label: "Purpose & Business Case", type: "textarea", required: true, placeholder: "Why does this project exist? What problem does it solve or opportunity does it capture?" },
+  { key: "objectives", label: "Objectives (SMART Goals)", type: "textarea", required: true, placeholder: "One goal per line. Be Specific, Measurable, Achievable, Relevant, Time-bound." },
+  { key: "inScope", label: "In Scope", type: "textarea", placeholder: "What work is included? One item per line." },
+  { key: "outScope", label: "Out of Scope", type: "textarea", placeholder: "What is explicitly excluded? One item per line." },
+  { key: "stakeholders", label: "Key Stakeholders", type: "textarea", placeholder: "One per line: Name — Role (e.g. Jane Doe — Product Sponsor)" },
+  { key: "budget", label: "Budget", type: "input", placeholder: "High-level budget or resource estimate" },
+  { key: "milestones", label: "Key Milestones", type: "textarea", placeholder: "One per line: Milestone — Target Date" },
+  { key: "assumptions", label: "Assumptions", type: "textarea", placeholder: "What are you taking as true, without proof, for planning purposes?" },
+  { key: "constraints", label: "Constraints", type: "textarea", placeholder: "What limits your options? (deadlines, budget caps, technology, compliance)" },
+  { key: "risks", label: "High-Level Risks", type: "textarea", placeholder: "What could threaten this project's success? One per line." },
+  { key: "successCriteria", label: "Success Criteria", type: "textarea", placeholder: "How will you know the project succeeded?" },
+];
+
+const PACE_PLANS = {
+  objectivesSmart: {
+    primary: "Rewrite objectives with explicit numbers and deadlines before kickoff.",
+    alternate: "If exact numbers aren't available yet, set placeholder targets and commit to finalizing them in your first planning session.",
+    contingency: "Track objectives qualitatively and convert them to measurable targets at your first milestone review.",
+    emergency: "Proceed without measurable objectives, but flag this explicitly to your sponsor as an accepted risk.",
+  },
+  sponsor: {
+    primary: "Get an executive sponsor named and confirmed before the charter is approved.",
+    alternate: "Ask your direct manager to act as interim sponsor until a permanent one is assigned.",
+    contingency: "Escalate to leadership for a sponsor assignment before major funding or resourcing decisions.",
+    emergency: "Proceed without a sponsor, but document who absorbs executive decisions and escalations in the meantime.",
+  },
+  scope: {
+    primary: "Run a scoping session with stakeholders to define both in-scope and out-of-scope items before work starts.",
+    alternate: "Draft a scope statement yourself and circulate it for a short stakeholder review.",
+    contingency: "Start with the highest-confidence scope items and treat the rest as 'to be scoped' during execution.",
+    emergency: "Begin work with only rough scope, but set a hard checkpoint in the first two weeks to lock it down.",
+  },
+  stakeholders: {
+    primary: "Build a stakeholder register identifying every affected party before kickoff.",
+    alternate: "List the stakeholders you're confident about now and add others as they surface.",
+    contingency: "Assign someone on the team to own ongoing stakeholder identification during execution.",
+    emergency: "Proceed without a full list, but hold a broad early kickoff meeting to surface anyone missed.",
+  },
+  budget: {
+    primary: "Get a budget estimate approved by finance or your sponsor before starting.",
+    alternate: "Use a rough order-of-magnitude estimate and refine it once real costs are known.",
+    contingency: "Track spend informally and request formal budget approval at the first milestone.",
+    emergency: "Proceed without a budget baseline, but cap spending to what you can personally authorize.",
+  },
+  milestones: {
+    primary: "Build a full milestone schedule with target dates before work begins.",
+    alternate: "Set milestones for the next 30–60 days now, and schedule the rest once early work clarifies pace.",
+    contingency: "Track progress against a rough phase list instead of dates until a real schedule exists.",
+    emergency: "Start work without milestones, but commit to creating a schedule within the first week.",
+  },
+  waterfallMilestones: {
+    primary: "Add explicit phase-gate milestones (requirements, design, build, test, deploy) with sign-off dates.",
+    alternate: "Group phases into fewer but clearly bounded gates if the project is small.",
+    contingency: "Review progress against existing milestones more frequently to compensate for fewer checkpoints.",
+    emergency: "Proceed with current milestones, but add a mid-project phase review as a safety net.",
+  },
+  assumptions: {
+    primary: "Hold a short workshop to surface and document key assumptions before planning locks in.",
+    alternate: "Have the PM draft assumptions solo and validate them with the team at the next standup or review.",
+    contingency: "Capture assumptions as they surface during execution and log them retroactively.",
+    emergency: "Proceed without documented assumptions, but stay alert for decisions made on unstated ones.",
+  },
+  constraints: {
+    primary: "Document known constraints (budget caps, deadlines, compliance, technology) before finalizing the plan.",
+    alternate: "List the constraints you're aware of now and revisit with stakeholders for anything missed.",
+    contingency: "Treat the current plan as provisional and adjust it the moment a hidden constraint surfaces.",
+    emergency: "Proceed without a constraints list, but build in schedule and budget buffer to absorb surprises.",
+  },
+  risks: {
+    primary: "Run a risk identification session and build a Risk Register before kickoff.",
+    alternate: "Have the PM draft an initial risk list solo, covering the most obvious threats.",
+    contingency: "Add risks to the register as they're noticed during execution, rather than up front.",
+    emergency: "Proceed without a risk register, but designate one person responsible for flagging issues immediately.",
+  },
+  successCriteria: {
+    primary: "Define clear success criteria with stakeholders before work starts.",
+    alternate: "Draft success criteria yourself and confirm them with the sponsor.",
+    contingency: "Set provisional success criteria now and finalize them at the first major milestone.",
+    emergency: "Proceed without agreed success criteria, but require sign-off before declaring the project closed.",
+  },
+  agileScope: {
+    primary: "Move detailed scope items into a product backlog and keep the charter high-level.",
+    alternate: "Keep the detail in the charter for now, but flag it for pruning at your first backlog refinement.",
+    contingency: "Treat the detailed list as a starting backlog rather than committed charter scope.",
+    emergency: "Proceed as-is, but revisit scope rigidity at the first retrospective if it's slowing the team down.",
+  },
+};
+
+/* ============================================================
+   DATA — Scope Management Plan
+   ============================================================ */
+
+const SCOPE_TIPS = {
+  waterfall: {
+    scopeStatementProcess: "Document the scope statement in full up front — Waterfall assumes it's locked before design begins.",
+    wbsApproach: "Decompose to the work package level across every phase; a detailed WBS is central to Waterfall planning and estimating.",
+    changeControlProcess: "Route every change request through a formal Change Control Board with sign-off before any scope adjustment.",
+    scopeCreepPrevention: "Treat any unapproved addition as an automatic change request — no informal scope changes.",
+  },
+  agile: {
+    scopeStatementProcess: "Keep this directional — the product backlog, not the scope statement, will carry the real detail.",
+    wbsApproach: "A full WBS is optional; consider epics and user stories in the backlog instead of a rigid work breakdown.",
+    changeControlProcess: "Scope changes are expected — handle them through backlog reprioritization each sprint rather than formal change requests.",
+    scopeCreepPrevention: "Protect the current sprint's committed scope, but welcome reprioritization at the start of each sprint.",
+  },
+  hybrid: {
+    scopeStatementProcess: "Write a full scope statement for fixed workstreams; keep exploratory workstreams directional and backlog-driven.",
+    wbsApproach: "Build a WBS for the fixed-scope workstreams; use backlog epics for the iterative ones.",
+    changeControlProcess: "Use a formal Change Control Board for fixed-scope items, and lightweight backlog reprioritization for iterative ones.",
+    scopeCreepPrevention: "Define clearly which workstreams are protected by formal change control and which are expected to evolve.",
+  },
+};
+
+const SCOPE_FIELDS = [
+  { key: "projectTitle", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+  { key: "scopeStatementProcess", label: "Scope Definition Process", type: "textarea", required: true, placeholder: "How will detailed project scope be defined and documented? Who is involved?" },
+  { key: "wbsApproach", label: "Work Breakdown Structure (WBS) Approach", type: "textarea", placeholder: "How will the WBS be created? To what level of detail (phases, deliverables, work packages)?" },
+  { key: "scopeBaseline", label: "Scope Baseline", type: "textarea", placeholder: "What documents make up your approved scope baseline? (e.g. scope statement, WBS, WBS dictionary)" },
+  { key: "acceptanceProcess", label: "Deliverable Acceptance Process", type: "textarea", required: true, placeholder: "Who verifies and formally accepts completed deliverables, and how?" },
+  { key: "changeControlProcess", label: "Scope Change Control Process", type: "textarea", required: true, placeholder: "How will scope change requests be submitted, evaluated, and approved or rejected?" },
+  { key: "rolesResponsibilities", label: "Roles & Responsibilities", type: "textarea", placeholder: "Who owns scope decisions? (e.g. Sponsor approves major changes, PM manages day-to-day scope)" },
+  { key: "scopeCreepPrevention", label: "Scope Creep Prevention", type: "textarea", placeholder: "What specific practices will prevent unauthorized scope creep?" },
+  { key: "requirementsTraceability", label: "Requirements Traceability", type: "textarea", placeholder: "How will you track requirements through to delivered features or deliverables?" },
+];
+
+/* ============================================================
+   DATA — Field Examples ("Show Example" helper)
+   ============================================================ */
+
+const FIELD_EXAMPLES = {
+  // Charter fields
+  title: "Checkout Flow Redesign",
+  pmName: "Jordan Lee, Senior Project Manager",
+  sponsor: "Alex Rivera, VP of Product",
+  purpose: {
+    waterfall: "Our current checkout process requires 14 manual steps and causes a 28% cart abandonment rate. This project will replace it with a streamlined, PCI-compliant flow to cut checkout time from 4 minutes to under 90 seconds, reducing abandonment and support tickets.",
+    agile: "Customer feedback consistently flags our mobile checkout as confusing. This project exists to iteratively redesign checkout, testing changes with real users each sprint until abandonment drops below 15%.",
+    hybrid: "Our PCI-compliance upgrade to the payment gateway must ship by Q3, but the new checkout UX built on top of it is still being validated with users. This project delivers both: a fixed compliance migration and an evolving checkout experience.",
+  },
+  objectives: {
+    waterfall: "1. Migrate to the new payment gateway with zero downtime by September 30.\n2. Achieve 99.9% transaction accuracy verified by QA sign-off.\n3. Complete user acceptance testing with zero critical defects before go-live.",
+    agile: "1. Reduce checkout abandonment from 28% to under 15% within 3 months of launch.\n2. Ship a working improvement to production every 2-week sprint.\n3. Reach a customer satisfaction score of 4.5/5 on the new flow by Q4.",
+    hybrid: "1. Complete the PCI-compliance migration by Q3 with zero data loss (fixed).\n2. Deliver 3 iterations of the checkout UX based on user testing feedback (flexible).\n3. Achieve stakeholder sign-off on both workstreams by year end.",
+  },
+  inScope: "Redesign of the checkout flow (cart, payment, confirmation)\nMobile and desktop responsive layouts\nIntegration with the existing payment gateway\nA/B testing framework for checkout variants",
+  outScope: "Redesign of the product catalog or search\nChanges to the payment gateway provider\nInternal admin/back-office tools\nLoyalty program integration (planned for a future phase)",
+  stakeholders: "Alex Rivera — Executive Sponsor\nJordan Lee — Project Manager\nSam Patel — Engineering Lead\nMorgan Diaz — Customer Support Manager\nFinance Team — Budget Approval",
+  budget: "$85,000 across design, engineering, and QA resources for a 4-month timeline",
+  milestones: {
+    waterfall: "Requirements sign-off — March 15\nDesign approval — April 5\nDevelopment complete — June 1\nUAT complete — June 20\nGo-live — July 1",
+    agile: "Sprint 1 demo (cart redesign) — March 14\nSprint 3 demo (payment flow) — April 11\nBeta release to 10% of users — May 2\nFull rollout — June 1",
+    hybrid: "Payment gateway cutover (fixed) — August 15\nCheckout UX v1 release (iterative) — September 1\nCheckout UX v2 based on feedback — October 1\nFinal sign-off — November 1",
+  },
+  assumptions: "The existing payment gateway API will remain stable throughout the project\nDesign resources are available at 50% capacity starting week 1\nNo major holidays will impact the development timeline\nStakeholders will provide feedback within 2 business days",
+  constraints: "Total budget is capped at $85,000\nMust launch before the Q4 holiday shopping season\nMust remain PCI-DSS compliant\nLimited to the current engineering team — no new hires",
+  risks: "Payment gateway API changes could delay integration (Medium likelihood, High impact)\nKey engineer is also supporting another project (Medium, Medium)\nUser testing may reveal need for larger redesign scope (Low, High)\nHoliday code freeze could compress the timeline (High, Medium)",
+  successCriteria: "Checkout abandonment drops below 15% within 60 days of launch\nZero critical bugs reported in the first 2 weeks\nSponsor and QA formally sign off on completion\nSupport ticket volume related to checkout drops by 30%",
+
+  // Scope plan fields
+  projectTitle: "Checkout Flow Redesign",
+  scopeStatementProcess: {
+    waterfall: "The PM drafts a detailed scope statement during Planning, reviewed by Engineering and Design leads, then formally approved by the Sponsor before any design work begins. Changes after approval require a Change Request.",
+    agile: "The Product Owner maintains scope through the product backlog. Detailed scope for each sprint is defined during backlog refinement and sprint planning, not fixed at project start.",
+    hybrid: "Fixed-scope workstreams (e.g. the payment gateway migration) get a detailed scope statement approved before work starts. Exploratory workstreams (e.g. the new checkout UX) are scoped incrementally through backlog refinement.",
+  },
+  wbsApproach: "Break the project into 3 levels: Phase → Deliverable → Work Package, down to tasks estimable in 1–3 days. Engineering and Design leads own their respective branches of the WBS.",
+  scopeBaseline: "The approved Scope Statement, WBS, and WBS Dictionary as signed off by the Sponsor on the charter approval date. Any future scope change must be reflected in an updated baseline version.",
+  acceptanceProcess: "Each deliverable is reviewed against its acceptance criteria in the WBS Dictionary by the QA Lead, then formally signed off by the Sponsor before being marked complete.",
+  changeControlProcess: "Change requests are submitted via a Scope Change Request form, reviewed by the Change Control Board (PM, Sponsor, Engineering Lead) within 3 business days, and approved or rejected with documented rationale.",
+  rolesResponsibilities: "Sponsor — approves major scope changes and budget impacts\nProject Manager — maintains the scope baseline and WBS\nEngineering Lead — validates technical feasibility of scope changes\nQA Lead — verifies deliverables meet acceptance criteria",
+  scopeCreepPrevention: "All new requests are logged as formal change requests, no exceptions. A weekly scope review in the team standup flags anything drifting outside the approved WBS. Sponsor sign-off is required for any addition, regardless of size.",
+  requirementsTraceability: "Each requirement is logged in a Requirements Traceability Matrix, mapped to the WBS deliverable that satisfies it and the test case that verifies it, so nothing shipped falls outside approved scope.",
+};
+
+function getFieldExample(key, recommended) {
+  const entry = FIELD_EXAMPLES[key];
+  if (!entry) return "";
+  if (typeof entry === "string") return entry;
+  return entry[recommended] || entry.hybrid || Object.values(entry)[0];
+}
+
+/* ============================================================
    COMPONENTS — Shared UI
    ============================================================ */
 
@@ -723,7 +946,7 @@ function ScoreBar({ label, pct, color, isTop }) {
   );
 }
 
-function ResultsScreen({ scores, recommended, answers, onRetake }) {
+function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter }) {
   const detail = METHODOLOGY_DETAILS[recommended];
   const colorMap = {
     blue: { header: "bg-blue-600", badge: "bg-blue-100 text-blue-800", ring: "ring-blue-300" },
@@ -800,6 +1023,16 @@ function ResultsScreen({ scores, recommended, answers, onRetake }) {
         </div>
       </Card>
 
+      {/* Next step: Charter */}
+      <div className="text-center pt-2">
+        <button
+          onClick={onBuildCharter}
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+        >
+          📄 Build Your Project Charter →
+        </button>
+      </div>
+
       {/* Retake */}
       <div className="text-center pt-2 pb-8">
         <button
@@ -814,13 +1047,761 @@ function ResultsScreen({ scores, recommended, answers, onRetake }) {
 }
 
 /* ============================================================
+   COMPONENTS — Project Charter Builder
+   ============================================================ */
+
+function CharterField({ field, value, onChange, tip, recommended }) {
+  const [showExample, setShowExample] = useState(false);
+  const example = getFieldExample(field.key, recommended);
+
+  return (
+    <div className="mb-5">
+      <label className="block text-sm font-semibold text-slate-900 mb-1">
+        {field.label}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      {tip && <p className="text-xs text-blue-600 bg-blue-50 rounded-lg px-2 py-1 mb-2">{tip}</p>}
+      {field.type === "textarea" ? (
+        <textarea
+          value={value}
+          onChange={e => onChange(field.key, e.target.value)}
+          placeholder={field.placeholder}
+          rows={3}
+          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={e => onChange(field.key, e.target.value)}
+          placeholder={field.placeholder}
+          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+        />
+      )}
+      {example && (
+        <div className="mt-1.5">
+          <button
+            type="button"
+            onClick={() => setShowExample(s => !s)}
+            className="text-xs font-medium text-purple-600 hover:text-purple-800"
+          >
+            💡 {showExample ? "Hide example" : "Not sure how to fill this out? See an example"}
+          </button>
+          {showExample && (
+            <div className="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg fade-in">
+              <div className="text-xs font-semibold text-purple-700 uppercase tracking-wide mb-1">Example</div>
+              <div className="text-xs text-purple-900 whitespace-pre-line leading-relaxed mb-2">{example}</div>
+              <button
+                type="button"
+                onClick={() => { onChange(field.key, example); setShowExample(false); }}
+                className="text-xs font-semibold text-purple-700 hover:text-purple-900 underline"
+              >
+                Use this example
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CharterDocument({ data, detail }) {
+  const section = (label, value) => {
+    if (!value || !value.trim()) return null;
+    return (
+      <div className="mb-5">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div id="charter-print-area">
+      <Card className="p-8">
+        <div className="text-center border-b border-slate-200 pb-5 mb-6">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Project Charter</div>
+          <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+            <span>{detail.icon}</span>
+            <span>Recommended methodology: <strong>{detail.name}</strong></span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Project Manager</div>
+            <div className="text-sm text-slate-800">{data.pmName || "—"}</div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Sponsor</div>
+            <div className="text-sm text-slate-800">{data.sponsor || "—"}</div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Budget</div>
+            <div className="text-sm text-slate-800">{data.budget || "—"}</div>
+          </div>
+        </div>
+
+        {section("Purpose & Business Case", data.purpose)}
+        {section("Objectives", data.objectives)}
+        {section("In Scope", data.inScope)}
+        {section("Out of Scope", data.outScope)}
+        {section("Key Stakeholders", data.stakeholders)}
+        {section("Key Milestones", data.milestones)}
+        {section("Assumptions", data.assumptions)}
+        {section("Constraints", data.constraints)}
+        {section("High-Level Risks", data.risks)}
+        {section("Success Criteria", data.successCriteria)}
+
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+          </div>
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function analyzeCharter(data, recommended) {
+  const get = key => (data[key] || "").trim();
+  const lines = str => str.split("\n").map(s => s.trim()).filter(Boolean);
+  const strengths = [];
+  const gaps = [];
+
+  const objectives = get("objectives");
+  const hasMeasurable = /\d/.test(objectives) || /%|percent/i.test(objectives);
+  const hasTimebound = /\b(by|before|within|deadline|due|q[1-4]|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b/i.test(objectives);
+  if (hasMeasurable && hasTimebound) {
+    strengths.push({ title: "Objectives are measurable and time-bound", detail: "Your objectives include numbers or dates, giving the team a clear target and deadline to work toward." });
+  } else {
+    gaps.push({ key: "objectivesSmart", title: "Objectives may not be fully SMART", detail: "Add specific numbers, percentages, or deadlines so it's obvious when you've succeeded." });
+  }
+
+  if (get("sponsor")) {
+    strengths.push({ title: "Sponsor identified", detail: "A named sponsor gives the project authority to resolve roadblocks and secure resources." });
+  } else {
+    gaps.push({ key: "sponsor", title: "No sponsor named", detail: "Without an accountable executive sponsor, the project may struggle to get funding or escalate blockers." });
+  }
+
+  const inScope = get("inScope");
+  const outScope = get("outScope");
+  if (inScope && outScope) {
+    strengths.push({ title: "Scope boundaries are clear", detail: "You've defined both what's included and excluded — one of the strongest defenses against scope creep." });
+  } else if (inScope && !outScope) {
+    gaps.push({ key: "scope", title: "Out-of-scope isn't defined", detail: "You've said what's included, but not what's excluded. Undefined boundaries are a common source of scope creep." });
+  } else {
+    gaps.push({ key: "scope", title: "No scope defined", detail: "Without in-scope/out-of-scope boundaries, the team and stakeholders may disagree about what this project actually covers." });
+  }
+
+  if (get("stakeholders")) {
+    const count = lines(get("stakeholders")).length;
+    strengths.push({ title: `${count} stakeholder${count === 1 ? "" : "s"} identified`, detail: "Naming stakeholders early helps you plan communication and avoid late surprises." });
+  } else {
+    gaps.push({ key: "stakeholders", title: "No stakeholders listed", detail: "Unidentified stakeholders are one of the most common reasons projects run into resistance or missed requirements." });
+  }
+
+  if (get("budget")) {
+    strengths.push({ title: "Budget captured", detail: "A budget baseline lets you track whether the project stays financially on track." });
+  } else {
+    gaps.push({ key: "budget", title: "No budget captured", detail: "Without an estimate, you won't be able to tell if the project is over or under budget as it progresses." });
+  }
+
+  const milestones = get("milestones");
+  if (milestones) {
+    const msLines = lines(milestones);
+    const hasDates = /\d{1,4}[-\/]\d{1,2}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|q[1-4]|\d{4})\b/i.test(milestones);
+    if (hasDates) {
+      strengths.push({ title: "Milestones have target dates", detail: "Dated milestones give you concrete checkpoints to measure progress against." });
+    } else {
+      gaps.push({ key: "milestones", title: "Milestones are missing target dates", detail: "You've listed milestones, but without dates it's hard to know if you're on schedule." });
+    }
+    if (recommended === "waterfall" && msLines.length < 3) {
+      gaps.push({ key: "waterfallMilestones", title: "Few phase-gate milestones for a Waterfall project", detail: "Waterfall projects typically track multiple phase gates (requirements, design, build, test, deploy). Consider adding more." });
+    }
+  } else {
+    gaps.push({ key: "milestones", title: "No milestones listed", detail: "Without checkpoints, it's hard to tell if the project is progressing on schedule." });
+  }
+
+  if (get("assumptions")) {
+    strengths.push({ title: "Assumptions documented", detail: "Writing down assumptions makes it easier to catch them if they turn out to be false." });
+  } else {
+    gaps.push({ key: "assumptions", title: "No assumptions documented", detail: "Unstated assumptions often turn into unpleasant surprises mid-project." });
+  }
+
+  if (get("constraints")) {
+    strengths.push({ title: "Constraints captured", detail: "Known limits (budget, deadlines, compliance) keep planning realistic." });
+  } else {
+    gaps.push({ key: "constraints", title: "No constraints captured", detail: "Without documented limits, plans may be built on unrealistic assumptions about time, budget, or resources." });
+  }
+
+  if (get("risks")) {
+    strengths.push({ title: "Risks identified", detail: "Naming risks up front means the team can plan responses instead of reacting under pressure." });
+  } else {
+    gaps.push({ key: "risks", title: "No risks identified", detail: "Every project carries risk — skipping this section usually means risks get discovered the hard way, mid-project." });
+  }
+
+  if (get("successCriteria")) {
+    strengths.push({ title: "Success criteria defined", detail: "A clear definition of \"done\" makes it obvious when the project has actually succeeded." });
+  } else {
+    gaps.push({ key: "successCriteria", title: "No success criteria defined", detail: "Without a definition of done, it's hard to know when to close the project — or whether it delivered value." });
+  }
+
+  if (recommended === "agile" && lines(inScope).length > 6) {
+    gaps.push({ key: "agileScope", title: "Scope may be too detailed for Agile", detail: "You've listed a lot of fixed scope items. Consider keeping the charter high-level and letting your backlog absorb the details, so scope can adapt." });
+  }
+
+  const total = strengths.length + gaps.length;
+  const score = total === 0 ? 0 : Math.round((strengths.length / total) * 100);
+
+  let verdict, verdictColor;
+  if (score >= 80) { verdict = "Likely to Work Well"; verdictColor = "green"; }
+  else if (score >= 50) { verdict = "On the Right Track — a Few Gaps"; verdictColor = "amber"; }
+  else { verdict = "High Risk — Key Pieces Missing"; verdictColor = "red"; }
+
+  return { score, verdict, verdictColor, strengths, gaps };
+}
+
+function assessViability(data) {
+  const get = key => (data[key] || "").trim();
+  const milestones = get("milestones");
+  const hasMilestoneDates = /\d{1,4}[-\/]\d{1,2}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|q[1-4]|\d{4})\b/i.test(milestones);
+
+  const kickoffChecks = [
+    { label: "Sponsor named", pass: !!get("sponsor") },
+    { label: "Budget captured", pass: !!get("budget") },
+    { label: "Stakeholders identified", pass: !!get("stakeholders") },
+    { label: "Scope defined", pass: !!get("inScope") },
+    { label: "Milestones set", pass: !!milestones },
+  ];
+
+  const trackChecks = [
+    { label: "Risks identified", pass: !!get("risks") },
+    { label: "Assumptions documented", pass: !!get("assumptions") },
+    { label: "Constraints captured", pass: !!get("constraints") },
+    { label: "Success criteria defined", pass: !!get("successCriteria") },
+    { label: "Milestones have dates", pass: hasMilestoneDates },
+  ];
+
+  const pct = checks => Math.round((checks.filter(c => c.pass).length / checks.length) * 100);
+  const readiness = pct(kickoffChecks);
+  const durability = pct(trackChecks);
+
+  let verdict, verdictColor, summary;
+  if (readiness >= 60 && durability >= 60) {
+    verdict = "Active — Ready to Launch";
+    verdictColor = "green";
+    summary = "This charter has what it needs to kick off now, plus the risk and planning groundwork to keep moving once it's underway.";
+  } else if (readiness >= 60 && durability < 60) {
+    verdict = "Ready to Launch, at Risk of Stalling";
+    verdictColor = "amber";
+    summary = "You can start this project, but thin risk planning, assumptions, or success criteria mean it may lose momentum partway through.";
+  } else if (readiness < 60 && durability >= 60) {
+    verdict = "Well-Planned, Not Yet Ready to Launch";
+    verdictColor = "amber";
+    summary = "The long-term thinking is solid, but core launch pieces — sponsor, budget, scope, or milestones — are still missing.";
+  } else {
+    verdict = "Not Yet Active";
+    verdictColor = "red";
+    summary = "This charter isn't ready to start and doesn't yet show the planning needed to stay on track. Fill in more sections before kicking off.";
+  }
+
+  return { readiness, durability, verdict, verdictColor, summary, kickoffChecks, trackChecks };
+}
+
+function ChecklistRow({ label, pass }) {
+  return (
+    <li className="flex items-center gap-2 text-xs text-slate-600">
+      <span className={pass ? "text-green-600" : "text-slate-300"}>{pass ? "✓" : "○"}</span>
+      <span className={pass ? "" : "text-slate-400"}>{label}</span>
+    </li>
+  );
+}
+
+function CharterViability({ data }) {
+  const { readiness, durability, verdict, verdictColor, summary, kickoffChecks, trackChecks } = assessViability(data);
+  const colorMap = {
+    green: { bg: "bg-green-600", text: "text-green-700", bar: "bg-green-500" },
+    amber: { bg: "bg-amber-500", text: "text-amber-700", bar: "bg-amber-500" },
+    red: { bg: "bg-red-600", text: "text-red-700", bar: "bg-red-500" },
+  };
+  const c = colorMap[verdictColor];
+
+  return (
+    <Card className="p-6">
+      <div className="flex items-start gap-3 mb-4">
+        <span className={`flex-shrink-0 w-10 h-10 rounded-full ${c.bg} text-white flex items-center justify-center text-lg`}>
+          {verdictColor === "green" ? "✓" : verdictColor === "amber" ? "!" : "✗"}
+        </span>
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Will This Charter Be Active?</div>
+          <h3 className={`text-lg font-bold ${c.text}`}>{verdict}</h3>
+          <p className="text-sm text-slate-600 mt-1">{summary}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-semibold text-slate-700">Ready to Kick Off</span>
+            <span className="text-xs font-bold text-slate-500">{readiness}%</span>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
+            <div className={`h-full rounded-full ${c.bar}`} style={{ width: `${readiness}%` }} />
+          </div>
+          <ul className="space-y-1">
+            {kickoffChecks.map((chk, i) => <ChecklistRow key={i} label={chk.label} pass={chk.pass} />)}
+          </ul>
+        </div>
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-semibold text-slate-700">Likely to Stay on Track</span>
+            <span className="text-xs font-bold text-slate-500">{durability}%</span>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
+            <div className={`h-full rounded-full ${c.bar}`} style={{ width: `${durability}%` }} />
+          </div>
+          <ul className="space-y-1">
+            {trackChecks.map((chk, i) => <ChecklistRow key={i} label={chk.label} pass={chk.pass} />)}
+          </ul>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function PaceRow({ letter, label, text, color }) {
+  const colorMap = {
+    green: "bg-green-100 text-green-800",
+    blue: "bg-blue-100 text-blue-800",
+    amber: "bg-amber-100 text-amber-800",
+    red: "bg-red-100 text-red-800",
+  };
+  return (
+    <div className="flex gap-2 text-xs">
+      <span className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center font-bold ${colorMap[color]}`}>{letter}</span>
+      <div>
+        <span className="font-semibold text-slate-700">{label}: </span>
+        <span className="text-slate-600">{text}</span>
+      </div>
+    </div>
+  );
+}
+
+function PaceGapCard({ gap }) {
+  const [open, setOpen] = useState(false);
+  const plan = PACE_PLANS[gap.key];
+  if (!plan) return null;
+  return (
+    <div className="border border-slate-200 rounded-xl overflow-hidden">
+      <button className="w-full text-left p-3 flex items-center justify-between gap-2" onClick={() => setOpen(o => !o)}>
+        <span className="text-sm font-medium text-slate-800">{gap.title}</span>
+        <span className={`text-slate-400 text-sm flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+      </button>
+      {open && (
+        <div className="px-3 pb-3 space-y-2 fade-in">
+          <PaceRow letter="P" label="Primary" text={plan.primary} color="green" />
+          <PaceRow letter="A" label="Alternate" text={plan.alternate} color="blue" />
+          <PaceRow letter="C" label="Contingency" text={plan.contingency} color="amber" />
+          <PaceRow letter="E" label="Emergency" text={plan.emergency} color="red" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CharterHealthCheck({ data, recommended }) {
+  const { score, verdict, verdictColor, strengths, gaps } = analyzeCharter(data, recommended);
+  const colorMap = {
+    green: { bg: "bg-green-600", text: "text-green-700" },
+    amber: { bg: "bg-amber-500", text: "text-amber-700" },
+    red: { bg: "bg-red-600", text: "text-red-700" },
+  };
+  const c = colorMap[verdictColor];
+
+  return (
+    <Card className="p-6">
+      <div className="flex items-center justify-between mb-4 gap-4">
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Charter Health Check</div>
+          <h3 className={`text-xl font-bold ${c.text}`}>{verdict}</h3>
+        </div>
+        <div className={`w-16 h-16 rounded-full ${c.bg} text-white flex items-center justify-center text-lg font-bold flex-shrink-0`}>
+          {score}%
+        </div>
+      </div>
+
+      {strengths.length > 0 && (
+        <div className="mb-4">
+          <div className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">✓ What's Working</div>
+          <ul className="space-y-2">
+            {strengths.map((s, i) => (
+              <li key={i} className="text-sm">
+                <span className="font-medium text-slate-800">{s.title}</span>
+                <p className="text-slate-500 text-xs mt-0.5">{s.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {gaps.length > 0 && (
+        <div>
+          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">⚠ Parts You Might Have Missed</div>
+          <ul className="space-y-2">
+            {gaps.map((g, i) => (
+              <li key={i} className="text-sm bg-amber-50 rounded-lg p-2.5">
+                <span className="font-medium text-slate-800">{g.title}</span>
+                <p className="text-slate-600 text-xs mt-0.5">{g.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {gaps.length > 0 && (
+        <div className="mt-5 pt-5 border-t border-slate-100">
+          <div className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1">🛡 What To Do — PACE Backup Plans</div>
+          <p className="text-xs text-slate-500 mb-3">For each gap: Primary (best fix), Alternate (next best), Contingency (fallback), Emergency (last resort). Tap a gap to expand.</p>
+          <div className="space-y-2">
+            {gaps.map((g, i) => <PaceGapCard key={i} gap={g} />)}
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
+  const [data, setData] = useState({});
+  const [view, setView] = useState("form"); // "form" | "preview"
+  const [email, setEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState("idle"); // idle | sending | sent | error
+
+  const handleChange = (key, value) => setData(prev => ({ ...prev, [key]: value }));
+
+  const requiredFilled = CHARTER_FIELDS
+    .filter(f => f.required)
+    .every(f => (data[f.key] || "").trim().length > 0);
+
+  const tips = CHARTER_TIPS[recommended] || {};
+
+  const buildCharterText = () => {
+    const lines = [`PROJECT CHARTER: ${data.title || "Untitled Project"}`, ""];
+    lines.push(`Recommended Methodology: ${detail.name}`);
+    lines.push(`Project Manager: ${data.pmName || "—"}`);
+    lines.push(`Sponsor: ${data.sponsor || "—"}`);
+    lines.push(`Budget: ${data.budget || "—"}`);
+    lines.push("");
+    CHARTER_FIELDS.filter(f => !["title", "pmName", "sponsor", "budget"].includes(f.key)).forEach(f => {
+      if (data[f.key] && data[f.key].trim()) {
+        lines.push(f.label.toUpperCase());
+        lines.push(data[f.key].trim());
+        lines.push("");
+      }
+    });
+    return lines.join("\n");
+  };
+
+  const downloadTxt = () => {
+    const blob = new Blob([buildCharterText()], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(data.title || "project-charter").replace(/\s+/g, "-").toLowerCase()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const emailCharter = () => {
+    if (!email.trim()) return;
+    setEmailStatus("sending");
+    emailjs.send("service_l7dxn2u", "template_0sbn1r6", {
+      to_email: email.trim(),
+      project_title: data.title || "Untitled Project",
+      message: buildCharterText(),
+    }).then(() => {
+      setEmailStatus("sent");
+    }).catch((err) => {
+      console.error("EmailJS send failed:", err);
+      setEmailStatus("error");
+    });
+  };
+
+  if (view === "preview") {
+    return (
+      <div className="fade-in space-y-5">
+        <CharterDocument data={data} detail={detail} />
+        <CharterViability data={data} />
+        <CharterHealthCheck data={data} recommended={recommended} />
+        <div className="flex flex-wrap justify-center gap-3">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+            ← Edit Charter
+          </button>
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+            ⬇ Download as .txt
+          </button>
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+            🖨 Print / Save as PDF
+          </button>
+        </div>
+
+        <Card className="p-4 max-w-md mx-auto">
+          <div className="text-sm font-semibold text-slate-900 mb-1">📧 Email Yourself This Charter</div>
+          <p className="text-xs text-slate-500 mb-3">We'll send the full charter straight to your inbox.</p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={e => { setEmail(e.target.value); if (emailStatus !== "sending") setEmailStatus("idle"); }}
+              placeholder="you@email.com"
+              className="flex-1 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none px-3 py-2 text-sm"
+            />
+            <button
+              onClick={emailCharter}
+              disabled={!email.trim() || emailStatus === "sending"}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            >
+              {emailStatus === "sending" ? "Sending…" : "Send"}
+            </button>
+          </div>
+          {emailStatus === "sent" && (
+            <p className="text-xs text-green-600 font-medium mt-2">✓ Sent! Check your inbox.</p>
+          )}
+          {emailStatus === "error" && (
+            <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
+          )}
+        </Card>
+
+        <div className="text-center pb-4 pt-2">
+          <button
+            onClick={() => onBuildScopePlan(data.title)}
+            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+          >
+            📋 Build Your Scope Management Plan →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fade-in space-y-5">
+      <div className="text-center mb-2">
+        <div className="text-4xl mb-2">📄</div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Project Charter</h2>
+        <p className="text-slate-500 text-sm max-w-md mx-auto">
+          A charter formally authorizes your project. Fill in each section below — tips are tailored to your recommended methodology, {detail.name}.
+        </p>
+      </div>
+
+      <Card className="p-6">
+        {CHARTER_FIELDS.map(field => (
+          <CharterField
+            key={field.key}
+            field={field}
+            value={data[field.key] || ""}
+            onChange={handleChange}
+            tip={tips[field.key]}
+            recommended={recommended}
+          />
+        ))}
+      </Card>
+
+      <div className="flex justify-between items-center pb-8">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+          ← Back to Results
+        </button>
+        <button
+          onClick={() => setView("preview")}
+          disabled={!requiredFilled}
+          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Generate Charter →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   COMPONENTS — Scope Management Plan Builder
+   ============================================================ */
+
+function ScopePlanDocument({ data, detail }) {
+  const section = (label, value) => {
+    if (!value || !value.trim()) return null;
+    return (
+      <div className="mb-5">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div id="scope-print-area">
+      <Card className="p-8">
+        <div className="text-center border-b border-slate-200 pb-5 mb-6">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Scope Management Plan</div>
+          <h2 className="text-2xl font-bold text-slate-900">{data.projectTitle || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+            <span>{detail.icon}</span>
+            <span>Recommended methodology: <strong>{detail.name}</strong></span>
+          </div>
+        </div>
+
+        {section("Scope Definition Process", data.scopeStatementProcess)}
+        {section("Work Breakdown Structure (WBS) Approach", data.wbsApproach)}
+        {section("Scope Baseline", data.scopeBaseline)}
+        {section("Deliverable Acceptance Process", data.acceptanceProcess)}
+        {section("Scope Change Control Process", data.changeControlProcess)}
+        {section("Roles & Responsibilities", data.rolesResponsibilities)}
+        {section("Scope Creep Prevention", data.scopeCreepPrevention)}
+        {section("Requirements Traceability", data.requirementsTraceability)}
+
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+          </div>
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function ScopePlanBuilder({ recommended, detail, projectTitle, onBack }) {
+  const [data, setData] = useState({ projectTitle: projectTitle || "" });
+  const [view, setView] = useState("form"); // "form" | "preview"
+
+  const handleChange = (key, value) => setData(prev => ({ ...prev, [key]: value }));
+
+  const requiredFilled = SCOPE_FIELDS
+    .filter(f => f.required)
+    .every(f => (data[f.key] || "").trim().length > 0);
+
+  const tips = SCOPE_TIPS[recommended] || {};
+
+  const downloadTxt = () => {
+    const lines = [`SCOPE MANAGEMENT PLAN: ${data.projectTitle || "Untitled Project"}`, ""];
+    lines.push(`Recommended Methodology: ${detail.name}`);
+    lines.push("");
+    SCOPE_FIELDS.filter(f => f.key !== "projectTitle").forEach(f => {
+      if (data[f.key] && data[f.key].trim()) {
+        lines.push(f.label.toUpperCase());
+        lines.push(data[f.key].trim());
+        lines.push("");
+      }
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(data.projectTitle || "scope-management-plan").replace(/\s+/g, "-").toLowerCase()}-scope-plan.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (view === "preview") {
+    return (
+      <div className="fade-in space-y-5">
+        <ScopePlanDocument data={data} detail={detail} />
+        <div className="flex flex-wrap justify-center gap-3 pb-8">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+            ← Edit Plan
+          </button>
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+            ⬇ Download as .txt
+          </button>
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+            🖨 Print / Save as PDF
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fade-in space-y-5">
+      <div className="text-center mb-2">
+        <div className="text-4xl mb-2">📋</div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Scope Management Plan</h2>
+        <p className="text-slate-500 text-sm max-w-md mx-auto">
+          A scope management plan defines how you'll set, document, and protect your project's boundaries.
+        </p>
+      </div>
+
+      <Card className="p-5">
+        <h3 className="font-semibold text-slate-900 mb-2 text-sm">What Is a Scope Management Plan?</h3>
+        <p className="text-xs text-slate-600 leading-relaxed mb-3">
+          It's the document that governs how project scope gets defined, broken down, verified, and controlled — separate from the scope statement itself. Where the Project Charter authorizes the project and states scope at a high level, this plan describes the <em>process</em> you'll follow so scope stays accurate and doesn't quietly grow out of control.
+        </p>
+        <ul className="space-y-1.5">
+          {[
+            "How detailed scope will be defined and documented",
+            "How the Work Breakdown Structure (WBS) will be built and to what depth",
+            "What makes up the approved scope baseline",
+            "How completed deliverables get verified and formally accepted",
+            "How scope change requests are submitted, evaluated, and approved or rejected",
+            "What specifically prevents scope creep on this project",
+          ].map((b, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      <Card className="p-6">
+        {SCOPE_FIELDS.map(field => (
+          <CharterField
+            key={field.key}
+            field={field}
+            value={data[field.key] || ""}
+            onChange={handleChange}
+            tip={tips[field.key]}
+            recommended={recommended}
+          />
+        ))}
+      </Card>
+
+      <div className="flex justify-between items-center pb-8">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+          ← Back to Charter
+        </button>
+        <button
+          onClick={() => setView("preview")}
+          disabled={!requiredFilled}
+          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Generate Scope Plan →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
    COMPONENTS — Assessment Container
    ============================================================ */
 
 function AssessSection() {
-  const [step, setStep] = useState("intro"); // "intro" | number | "results"
+  const [step, setStep] = useState("intro"); // "intro" | number | "results" | "charter" | "scopePlan"
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
+  const [scopeTitle, setScopeTitle] = useState("");
 
   const startAssessment = () => setStep(0);
 
@@ -857,6 +1838,33 @@ function AssessSection() {
           recommended={result.recommended}
           answers={answers}
           onRetake={retake}
+          onBuildCharter={() => setStep("charter")}
+        />
+      </div>
+    );
+  }
+
+  if (step === "charter" && result) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <CharterBuilder
+          recommended={result.recommended}
+          detail={METHODOLOGY_DETAILS[result.recommended]}
+          onBack={() => setStep("results")}
+          onBuildScopePlan={(title) => { setScopeTitle(title); setStep("scopePlan"); }}
+        />
+      </div>
+    );
+  }
+
+  if (step === "scopePlan" && result) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <ScopePlanBuilder
+          recommended={result.recommended}
+          detail={METHODOLOGY_DETAILS[result.recommended]}
+          projectTitle={scopeTitle}
+          onBack={() => setStep("charter")}
         />
       </div>
     );
