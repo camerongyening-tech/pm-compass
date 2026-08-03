@@ -31,8 +31,9 @@
     @media print {
       body * { visibility: hidden; }
       #charter-print-area, #charter-print-area *,
-      #scope-print-area, #scope-print-area * { visibility: visible; }
-      #charter-print-area, #scope-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      #scope-print-area, #scope-print-area *,
+      #plan-print-area, #plan-print-area * { visibility: visible; }
+      #charter-print-area, #scope-print-area, #plan-print-area { position: absolute; left: 0; top: 0; width: 100%; }
     }
   </style>
 </head>
@@ -616,6 +617,107 @@ const FIELD_EXAMPLES = {
   rolesResponsibilities: "Sponsor — approves major scope changes and budget impacts\nProject Manager — maintains the scope baseline and WBS\nEngineering Lead — validates technical feasibility of scope changes\nQA Lead — verifies deliverables meet acceptance criteria",
   scopeCreepPrevention: "All new requests are logged as formal change requests, no exceptions. A weekly scope review in the team standup flags anything drifting outside the approved WBS. Sponsor sign-off is required for any addition, regardless of size.",
   requirementsTraceability: "Each requirement is logged in a Requirements Traceability Matrix, mapped to the WBS deliverable that satisfies it and the test case that verifies it, so nothing shipped falls outside approved scope.",
+
+  // Resource Management Plan
+  roleIdentification: "1 Product Manager (full-time)\n2 Frontend Engineers (full-time)\n1 Backend Engineer (50%)\n1 UX Designer (50%)\n1 QA Engineer (part-time, weeks 6-8)",
+  resourceAcquisition: {
+    waterfall: "All roles are staffed internally through Engineering's resource pool, confirmed and assigned before the project kicks off.",
+    agile: "The core team (PM, 2 engineers, designer) is dedicated full-time for the project's duration; QA joins as-needed from a shared pool.",
+    hybrid: "Core migration engineers are assigned full-time and fixed; UX and frontend resources flex in and out based on sprint needs.",
+  },
+  orgChart: "Sponsor (Alex Rivera) → Project Manager (Jordan Lee) → Engineering Lead, Design Lead, QA Lead, each managing their own contributors",
+  trainingNeeds: "Frontend team needs a 1-day workshop on the new payment SDK before development starts. QA needs access and training on the new test environment.",
+  physicalResources: "Staging environment with production-like data\nFigma seats for the design team\nAccess to the payment gateway sandbox\nLoad testing tool license",
+  resourceCalendar: {
+    waterfall: "Design: weeks 1-3. Engineering: weeks 3-9. QA: weeks 8-10. No overlap conflicts identified.",
+    agile: "Full team is available for the entire 12-week engagement; no part-time or shared resources.",
+    hybrid: "Migration engineers: full-time, weeks 1-10. UX/frontend: flex between this project and one other, confirmed weekly.",
+  },
+  releaseCriteria: "Engineers roll off within 1 week of go-live sign-off. QA remains for 2 weeks post-launch for hypercare support before releasing back to the shared pool.",
+
+  // Quality Management Plan
+  qualityStandards: "Must meet WCAG 2.1 AA accessibility standards\nMust pass PCI-DSS compliance review\nMust follow the company's design system components",
+  acceptanceCriteria: {
+    waterfall: "Each deliverable is accepted only after passing its full test plan with zero critical/high defects and sign-off from the Sponsor and QA Lead.",
+    agile: "Each user story is accepted when it meets its Definition of Done: code reviewed, tests passing, deployed to staging, and demoed to the Product Owner.",
+    hybrid: "Fixed deliverables require formal sign-off against a written test plan; iterative deliverables are accepted via Definition of Done each sprint.",
+  },
+  qualityAssurance: "Design reviews before development starts on each screen\nCode review required on every pull request\nAccessibility audit before each major release",
+  qualityControl: "Automated test suite runs on every build\nManual QA pass before each release\nA/B test results reviewed before full rollout",
+  qualityMetrics: "Defect rate: fewer than 2 critical bugs per release\nPage load time: under 2 seconds\nCustomer-reported issues: tracked weekly via support tickets",
+  qualityRoles: "QA Lead — owns test planning and sign-off\nEngineering Lead — owns code review standards\nSponsor — final approval on go-live readiness",
+
+  // Risk Management Plan
+  riskIdentification: {
+    waterfall: "A risk workshop with the full project team during Planning, followed by a review at each phase gate.",
+    agile: "Risks are surfaced during backlog refinement and flagged in any sprint planning session or retrospective.",
+    hybrid: "A formal workshop for the fixed-scope migration risks, plus an open, continuously updated risk log for the iterative UX work.",
+  },
+  topRisks: "Payment gateway API changes could delay integration (Medium, High) — Mitigate: lock API version early, monitor changelog\nKey engineer is shared with another project (Medium, Medium) — Mitigate: cross-train a backup\nHoliday code freeze compresses timeline (High, Medium) — Accept: build buffer into schedule",
+  riskAssessment: "5x5 matrix scoring Likelihood (1-5) x Impact (1-5); anything scoring 15+ gets a documented mitigation plan",
+  riskOwners: "Engineering Lead owns technical risks. PM owns schedule and resource risks. Sponsor owns budget risks.",
+  riskMonitoring: {
+    waterfall: "Reviewed formally at each phase gate (Requirements, Design, Build, Test, Deploy).",
+    agile: "Reviewed every sprint during planning and retrospective.",
+    hybrid: "Phase-gate review for fixed risks; sprint-level check-in for iterative risks.",
+  },
+  contingencyReserve: "10% of the total budget ($8,500) and a 1-week schedule buffer before the hard launch deadline",
+
+  // Communications Management Plan
+  stakeholderCommsNeeds: "Sponsor — high-level progress and budget status\nEngineering team — detailed technical decisions and blockers\nCustomer Support — upcoming changes that affect support scripts\nFinance — budget burn vs. plan",
+  channelsFormats: {
+    waterfall: "Weekly written status report via email, plus formal presentations at each phase gate review.",
+    agile: "Daily standups, a shared sprint board, and a demo at the end of every sprint.",
+    hybrid: "Formal status reports for the compliance migration; sprint demos and a shared board for the iterative UX work.",
+  },
+  frequency: {
+    waterfall: "Weekly status reports, plus a formal review meeting at the end of each phase.",
+    agile: "Daily standups, bi-weekly sprint demos, and a retrospective every 2 weeks.",
+    hybrid: "Weekly status reports for the fixed-scope work, plus bi-weekly demos for the iterative work.",
+  },
+  reportingStructure: "PM drafts the weekly status report, Engineering Lead reviews technical accuracy, Sponsor receives the final version",
+  escalationPath: "Blockers unresolved after 24 hours go to the PM. Cross-team conflicts or budget risks escalate to the Sponsor within 48 hours.",
+  meetingCadence: "Daily standup (15 min, core team)\nWeekly stakeholder update (30 min, PM + Sponsor)\nSprint demo every 2 weeks (30 min, full team + stakeholders)\nRetrospective every 2 weeks (45 min, core team)",
+
+  // Stakeholder Engagement Plan
+  stakeholderList: "Alex Rivera — Executive Sponsor\nJordan Lee — Project Manager\nSam Patel — Engineering Lead\nMorgan Diaz — Customer Support Manager\nFinance Team — Budget oversight",
+  influenceInterest: "Alex Rivera — High influence, High interest\nFinance Team — High influence, Low interest\nCustomer Support — Low influence, High interest\nSam Patel — Medium influence, High interest",
+  engagementLevels: {
+    waterfall: "Alex Rivera: currently Supportive, need Leading through go-live decision — engage via phase-gate sign-offs.\nFinance: currently Neutral, need Supportive — engage via monthly budget reviews.",
+    agile: "Alex Rivera: currently Supportive, need Leading — engage via sprint demo attendance.\nCustomer Support: currently Neutral, need Supportive — engage via early access to demos.",
+    hybrid: "Alex Rivera: Supportive → Leading via milestone sign-offs.\nCustomer Support: Neutral → Supportive via sprint demo invites.",
+  },
+  engagementStrategy: "Invite Alex Rivera to every phase-gate review to maintain visibility and buy-in\nSend Finance a monthly one-page budget summary instead of the full status report\nGive Customer Support early access to demos so they can prep support scripts ahead of launch",
+  communicationPreferences: "Alex Rivera — prefers a short written summary over meetings\nFinance — prefers a monthly summary, not weekly updates\nCustomer Support — prefers live demos over written docs",
+  conflictResolution: "Disagreements between stakeholders are raised to the PM first; if unresolved within a week, escalated to the Sponsor for a final decision",
+
+  // Procurement Management Plan
+  procurementNeeds: "A third-party fraud detection service for the new checkout flow\nA load testing tool license\nA UX research contractor for 2 weeks of user testing",
+  makeOrBuy: "Fraud detection is being bought because building in-house would take 3+ months and this is a solved problem in the market. UX research is contracted because the team lacks bandwidth this quarter.",
+  vendorSelection: {
+    waterfall: "Formal RFP sent to 3 vendors, evaluated against a fixed scorecard, selected before Planning phase ends.",
+    agile: "Quotes gathered from 2-3 vendors as the need is identified mid-project; selected quickly to avoid blocking the current sprint.",
+    hybrid: "Formal RFP for the fraud detection vendor (fixed need); quick quotes for the UX research contractor (as-needed).",
+  },
+  contractType: "Fixed-price contract for the UX research engagement; subscription (time-based) pricing for the fraud detection service",
+  procurementSchedule: "RFP issued — March 1\nVendor selected — March 15\nContract signed — March 22\nService live — April 1",
+  vendorManagement: "Monthly check-in call with the fraud detection vendor; UX contractor delivers a written report at the end of each week of research",
+
+  // Change Management Plan
+  changeRequestProcess: {
+    waterfall: "Anyone on the project can submit a Change Request form; no informal scope changes are accepted once the baseline is set.",
+    agile: "Most changes are handled through backlog reprioritization by the Product Owner; only changes to the overall project charter need a formal request.",
+    hybrid: "Formal Change Request form required for the fixed-scope migration; backlog reprioritization suffices for the iterative UX work.",
+  },
+  evaluationProcess: "PM assesses schedule and resource impact; Engineering Lead assesses technical impact; both are documented on the change request before it goes to approval",
+  approvalAuthority: {
+    waterfall: "Sponsor approval required for any change affecting scope, budget, or the go-live date.",
+    agile: "Product Owner can approve backlog reprioritization independently; only charter-level changes need Sponsor approval.",
+    hybrid: "Sponsor approval required for changes to the fixed-scope migration; Product Owner can reprioritize the iterative backlog independently.",
+  },
+  changeControlBoard: "PM, Engineering Lead, and Sponsor meet biweekly (or on-demand for urgent requests) to review pending change requests",
+  documentationTracking: "All approved changes are logged in a shared Change Log with date, requestor, description, and impact, and summarized in the next status report",
+  baselineUpdates: "Approved changes trigger an updated version of the scope statement, schedule, and budget baseline, re-shared with the team within 2 business days",
 };
 
 function getFieldExample(key, recommended) {
@@ -624,6 +726,289 @@ function getFieldExample(key, recommended) {
   if (typeof entry === "string") return entry;
   return entry[recommended] || entry.hybrid || Object.values(entry)[0];
 }
+
+/* ============================================================
+   DATA — Additional Planning Documents (generic PlanBuilder)
+   ============================================================ */
+
+const PLAN_ORDER = ["resource", "quality", "risk", "communications", "stakeholder", "procurement", "change"];
+
+const PLAN_TYPES = [
+  {
+    key: "resource",
+    icon: "👥",
+    docLabel: "Resource Management Plan",
+    formTitle: "Build Your Resource Management Plan",
+    formIntro: "A resource management plan defines how you'll staff and equip the team to execute the schedule.",
+    introTitle: "What Is a Resource Management Plan?",
+    introBody: "It governs how the team and physical resources get assembled, organized, trained, and released — separate from day-to-day task assignment, this is the process for making sure the right people and materials show up at the right time.",
+    introBullets: [
+      "What roles and skills the project needs, and how many people",
+      "How resources will be acquired — internal, hire, or contract",
+      "How the team is organized and who reports to whom",
+      "What physical resources, tools, or facilities are required",
+      "When resources are available, and how they're released at the end",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "roleIdentification", label: "Roles & Skills Needed", type: "textarea", required: true, placeholder: "What roles and skill sets does this project need? List each role and how many people." },
+      { key: "resourceAcquisition", label: "Resource Acquisition", type: "textarea", placeholder: "How will you acquire these resources — internal reassignment, new hires, contractors?" },
+      { key: "orgChart", label: "Team Structure", type: "textarea", placeholder: "How is the team organized? Who reports to whom?" },
+      { key: "trainingNeeds", label: "Training Needs", type: "textarea", placeholder: "What training or skill development does the team need before or during the project?" },
+      { key: "physicalResources", label: "Physical & Material Resources", type: "textarea", required: true, placeholder: "What equipment, tools, software, or facilities does the project need?" },
+      { key: "resourceCalendar", label: "Resource Availability", type: "textarea", placeholder: "When is each resource available or needed? Note any constraints (e.g. shared team members, part-time availability)." },
+      { key: "releaseCriteria", label: "Resource Release Plan", type: "textarea", placeholder: "How and when will team members and resources be released from the project?" },
+    ],
+    tips: {
+      waterfall: {
+        resourceAcquisition: "Resources are typically assigned for defined phases up front — lock in commitments before planning finalizes.",
+        resourceCalendar: "Build a full resource calendar spanning every phase, since reassignment mid-project is disruptive in Waterfall.",
+      },
+      agile: {
+        resourceAcquisition: "Favor a small, stable, cross-functional team over point-in-time specialists — Agile depends on consistent team composition sprint to sprint.",
+        resourceCalendar: "Focus on near-term availability (the next 1-2 sprints) rather than a long-range calendar, since the plan will evolve.",
+      },
+      hybrid: {
+        resourceAcquisition: "Lock in resources for fixed-scope workstreams early; keep the iterative workstream's team flexible and dedicated.",
+        resourceCalendar: "Build a firm calendar for compliance/fixed phases, and a rolling near-term view for iterative work.",
+      },
+    },
+  },
+  {
+    key: "quality",
+    icon: "✅",
+    docLabel: "Quality Management Plan",
+    formTitle: "Build Your Quality Management Plan",
+    formIntro: "A quality management plan defines the standards your deliverables must meet and how you'll verify they meet them.",
+    introTitle: "What Is a Quality Management Plan?",
+    introBody: "It's the difference between 'finished' and 'actually good' — this document sets the standards deliverables must meet, the acceptance criteria that prove they meet them, and the QA/QC activities that catch problems before they ship.",
+    introBullets: [
+      "What quality standards apply (industry, regulatory, internal)",
+      "Acceptance criteria for each major deliverable",
+      "Quality assurance activities that prevent defects",
+      "Quality control checks that catch defects",
+      "Who owns quality decisions",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "qualityStandards", label: "Quality Standards", type: "textarea", required: true, placeholder: "What quality standards apply to this project? (industry standards, regulatory requirements, internal benchmarks)" },
+      { key: "acceptanceCriteria", label: "Acceptance Criteria", type: "textarea", required: true, placeholder: "What are the specific acceptance criteria for each major deliverable?" },
+      { key: "qualityAssurance", label: "Quality Assurance Activities", type: "textarea", placeholder: "What proactive QA activities will prevent defects? (process audits, design reviews, standards checklists)" },
+      { key: "qualityControl", label: "Quality Control Checks", type: "textarea", placeholder: "What QC checks will catch defects in deliverables? (testing, inspections, peer review)" },
+      { key: "qualityMetrics", label: "Quality Metrics", type: "textarea", placeholder: "What quality metrics will you track? (defect rate, rework hours, customer satisfaction score)" },
+      { key: "qualityRoles", label: "Roles & Responsibilities", type: "textarea", placeholder: "Who owns quality on this project? (QA lead, reviewers, final approver)" },
+    ],
+    tips: {
+      waterfall: {
+        acceptanceCriteria: "Define acceptance criteria for every deliverable up front, since deliverables are signed off once and not revisited.",
+        qualityControl: "Plan formal QC gates at the end of each phase — testing and inspection typically happen after build, not during.",
+      },
+      agile: {
+        acceptanceCriteria: "Define acceptance criteria per user story, refined continuously rather than fixed up front.",
+        qualityControl: "Build QC into each sprint — Definition of Done and continuous testing replace end-of-phase gates.",
+      },
+      hybrid: {
+        acceptanceCriteria: "Set fixed acceptance criteria for compliance-driven deliverables; keep iterative deliverables' criteria adaptable per sprint.",
+        qualityControl: "Use phase-gate QC for fixed-scope work and sprint-level QC (Definition of Done) for iterative work.",
+      },
+    },
+  },
+  {
+    key: "risk",
+    icon: "⚠️",
+    docLabel: "Risk Management Plan",
+    formTitle: "Build Your Risk Management Plan",
+    formIntro: "A risk management plan defines how you'll find risks before they find you.",
+    introTitle: "What Is a Risk Management Plan?",
+    introBody: "It's the process — not just the list — for how risks get identified, assessed, and responded to throughout the project, so surprises get handled deliberately instead of reactively.",
+    introBullets: [
+      "How and when risks will be identified",
+      "How likelihood and impact will be assessed",
+      "Response strategies for top risks (avoid, transfer, mitigate, accept)",
+      "Who owns monitoring each risk",
+      "What reserve is set aside for risks that occur",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "riskIdentification", label: "Risk Identification Process", type: "textarea", required: true, placeholder: "How and when will risks be identified? (brainstorming sessions, checklists, expert interviews)" },
+      { key: "topRisks", label: "Top Known Risks", type: "textarea", required: true, placeholder: "List your top known risks with likelihood, impact, and response strategy (Avoid, Transfer, Mitigate, or Accept)." },
+      { key: "riskAssessment", label: "Risk Assessment Approach", type: "textarea", placeholder: "How will you assess likelihood and impact? (e.g. High/Medium/Low matrix, numeric scoring)" },
+      { key: "riskOwners", label: "Risk Ownership", type: "textarea", placeholder: "Who owns monitoring and responding to each major risk?" },
+      { key: "riskMonitoring", label: "Risk Monitoring Cadence", type: "textarea", placeholder: "How often will risks be reviewed, and by whom?" },
+      { key: "contingencyReserve", label: "Contingency Reserve", type: "textarea", placeholder: "What budget or schedule reserve is set aside for risks that occur?" },
+    ],
+    tips: {
+      waterfall: {
+        riskIdentification: "Run a thorough risk identification workshop during Planning — most risks should be captured before execution begins.",
+        riskMonitoring: "Review the risk register at each phase gate rather than continuously.",
+      },
+      agile: {
+        riskIdentification: "Revisit risk identification every sprint — new risks surface as the product is discovered.",
+        riskMonitoring: "Review risks in every sprint planning session or retrospective, not on a fixed schedule.",
+      },
+      hybrid: {
+        riskIdentification: "Do a full risk workshop for fixed-scope work; keep an open risk log that's revisited each sprint for iterative work.",
+        riskMonitoring: "Combine phase-gate risk reviews with lightweight sprint-level check-ins.",
+      },
+    },
+  },
+  {
+    key: "communications",
+    icon: "💬",
+    docLabel: "Communications Management Plan",
+    formTitle: "Build Your Communications Management Plan",
+    formIntro: "A communications management plan defines who needs to know what, how often, and through which channel.",
+    introTitle: "What Is a Communications Management Plan?",
+    introBody: "It prevents both silence and noise — mapping each stakeholder's information needs to a specific channel, format, and frequency, so the right people get the right updates without drowning in ones they don't need.",
+    introBullets: [
+      "What each stakeholder group needs to know",
+      "Which channels and formats you'll use",
+      "How often each type of update happens",
+      "Who approves communications before they go out",
+      "How issues get escalated when they can't be resolved at the team level",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "stakeholderCommsNeeds", label: "Stakeholder Information Needs", type: "textarea", required: true, placeholder: "For each key stakeholder or group, what information do they need?" },
+      { key: "channelsFormats", label: "Channels & Formats", type: "textarea", required: true, placeholder: "What channels and formats will you use? (status reports, email, dashboards, standups)" },
+      { key: "frequency", label: "Communication Frequency", type: "textarea", placeholder: "How often will each type of communication happen?" },
+      { key: "reportingStructure", label: "Reporting Structure", type: "textarea", placeholder: "Who prepares and approves communications before they go out?" },
+      { key: "escalationPath", label: "Escalation Path", type: "textarea", placeholder: "How and to whom are issues escalated if they can't be resolved at the team level?" },
+      { key: "meetingCadence", label: "Meeting Cadence", type: "textarea", placeholder: "What recurring meetings will you hold? Include frequency and attendees (standups, steering committee, retrospectives)." },
+    ],
+    tips: {
+      waterfall: {
+        channelsFormats: "Favor formal, scheduled status reports and phase-gate reviews over informal channels.",
+        frequency: "Set a fixed cadence (e.g. weekly status report, milestone reviews) that doesn't change during the project.",
+      },
+      agile: {
+        channelsFormats: "Favor lightweight, frequent touchpoints — daily standups and sprint demos — over lengthy formal reports.",
+        frequency: "Align communication frequency to the sprint cadence (daily standups, end-of-sprint demos and retros).",
+      },
+      hybrid: {
+        channelsFormats: "Use formal reporting for fixed-scope milestones and lightweight standups/demos for iterative work.",
+        frequency: "Set fixed-cadence reporting for phase gates, and sprint-cadence touchpoints for iterative workstreams.",
+      },
+    },
+  },
+  {
+    key: "stakeholder",
+    icon: "🤝",
+    docLabel: "Stakeholder Engagement Plan",
+    formTitle: "Build Your Stakeholder Engagement Plan",
+    formIntro: "A stakeholder engagement plan maps influence and interest, then defines how you'll move each stakeholder toward the support you need.",
+    introTitle: "What Is a Stakeholder Engagement Plan?",
+    introBody: "It goes beyond simply listing stakeholders — it maps their influence and interest, compares their current engagement level to the level you need, and defines the specific actions that close that gap.",
+    introBullets: [
+      "Who your key stakeholders are and their level of influence/interest",
+      "Their current engagement level vs. the level you need",
+      "Specific actions to close that gap",
+      "How each stakeholder prefers to receive information",
+      "How conflicts between stakeholders get resolved",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "stakeholderList", label: "Key Stakeholders", type: "textarea", required: true, placeholder: "List key stakeholders and their role or interest in the project." },
+      { key: "influenceInterest", label: "Influence & Interest", type: "textarea", placeholder: "For each stakeholder, rate their influence and interest (High/Medium/Low)." },
+      { key: "engagementLevels", label: "Current vs. Desired Engagement", type: "textarea", required: true, placeholder: "For each key stakeholder, what's their current engagement level, and what level do you need (Unaware, Resistant, Neutral, Supportive, Leading)?" },
+      { key: "engagementStrategy", label: "Engagement Strategy", type: "textarea", placeholder: "What specific actions will move each stakeholder toward their desired engagement level?" },
+      { key: "communicationPreferences", label: "Communication Preferences", type: "textarea", placeholder: "How does each key stakeholder prefer to receive updates?" },
+      { key: "conflictResolution", label: "Conflict Resolution", type: "textarea", placeholder: "How will disagreements between stakeholders be resolved?" },
+    ],
+    tips: {
+      waterfall: {
+        engagementLevels: "Concentrate engagement at key phase gates — kickoff, design sign-off, UAT, go-live — rather than continuously.",
+        engagementStrategy: "Plan formal sign-off checkpoints as your primary engagement mechanism.",
+      },
+      agile: {
+        engagementLevels: "Aim for continuous, high engagement — ideally stakeholders participate in sprint reviews and demos.",
+        engagementStrategy: "Use recurring sprint demos as your primary engagement mechanism, not one-off milestone reviews.",
+      },
+      hybrid: {
+        engagementLevels: "Engage at formal checkpoints for fixed-scope work, and continuously (via demos) for iterative work.",
+        engagementStrategy: "Pair formal sign-offs for compliance-driven pieces with ongoing demo participation for iterative pieces.",
+      },
+    },
+  },
+  {
+    key: "procurement",
+    icon: "📦",
+    docLabel: "Procurement Management Plan",
+    formTitle: "Build Your Procurement Management Plan",
+    formIntro: "A procurement management plan covers vendor selection and contract management — only relevant if this project involves external purchases.",
+    introTitle: "What Is a Procurement Management Plan?",
+    introBody: "It covers how you'll buy goods or services from outside vendors. If everything on this project is being done in-house with no external purchases or contracts, you can skip this document entirely.",
+    introBullets: [
+      "What will be purchased from outside vendors",
+      "Why it's being bought rather than built in-house",
+      "How vendors will be selected",
+      "What type of contract will be used",
+      "How vendor performance will be managed",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "procurementNeeds", label: "What Will Be Procured", type: "textarea", required: true, placeholder: "What goods or services will be purchased from outside vendors?" },
+      { key: "makeOrBuy", label: "Make-or-Buy Rationale", type: "textarea", placeholder: "For each item, why is it being bought rather than built or done in-house?" },
+      { key: "vendorSelection", label: "Vendor Selection Process", type: "textarea", required: true, placeholder: "How will vendors be identified and selected? (RFP, quotes, existing preferred vendors)" },
+      { key: "contractType", label: "Contract Type", type: "textarea", placeholder: "What type of contract will be used? (fixed-price, time & materials, cost-reimbursable)" },
+      { key: "procurementSchedule", label: "Procurement Schedule", type: "textarea", placeholder: "What's the timeline — RFP issued, vendor selected, contract signed, delivery due?" },
+      { key: "vendorManagement", label: "Vendor Management", type: "textarea", placeholder: "How will vendor performance be monitored and managed during the project?" },
+    ],
+    tips: {
+      waterfall: {
+        procurementSchedule: "Finalize vendor contracts before execution begins — Waterfall assumes procurement is settled during Planning.",
+        contractType: "Fixed-price contracts fit well when scope is locked early, which is typical for Waterfall projects.",
+      },
+      agile: {
+        procurementSchedule: "Procurement may happen incrementally as needs emerge from the backlog, rather than all up front.",
+        contractType: "Time & materials contracts often fit better than fixed-price, since scope is expected to evolve.",
+      },
+      hybrid: {
+        procurementSchedule: "Lock in procurement early for fixed-scope needs; leave room to procure incrementally for exploratory work.",
+        contractType: "Consider fixed-price for the fixed-scope portion and time & materials for the iterative portion.",
+      },
+    },
+  },
+  {
+    key: "change",
+    icon: "🔁",
+    docLabel: "Change Management Plan",
+    formTitle: "Build Your Change Management Plan",
+    formIntro: "A change management plan defines the formal process for requesting, evaluating, and approving changes to the plan.",
+    introTitle: "What Is a Change Management Plan?",
+    introBody: "It's the single biggest defense against scope creep turning your plan into fiction — a defined process for how changes get requested, evaluated for impact, approved, and reflected in the project baseline.",
+    introBullets: [
+      "How change requests are submitted",
+      "How they're evaluated for impact on scope, schedule, cost, and risk",
+      "Who has authority to approve changes",
+      "How approved changes update the project baseline",
+      "How changes get communicated to the team and stakeholders",
+    ],
+    fields: [
+      { key: "title", label: "Project Title", type: "input", required: true, placeholder: "Should match your Project Charter" },
+      { key: "changeRequestProcess", label: "Change Request Process", type: "textarea", required: true, placeholder: "How are change requests submitted? (form, ticket, email) Who can submit one?" },
+      { key: "evaluationProcess", label: "Evaluation Process", type: "textarea", required: true, placeholder: "How are change requests evaluated? Who assesses impact on scope, schedule, cost, and risk?" },
+      { key: "approvalAuthority", label: "Approval Authority", type: "textarea", placeholder: "Who has authority to approve changes? Does it depend on the size or impact of the change?" },
+      { key: "changeControlBoard", label: "Change Control Board", type: "textarea", placeholder: "Who sits on the Change Control Board (if any), and how often do they meet?" },
+      { key: "documentationTracking", label: "Documentation & Tracking", type: "textarea", placeholder: "How are approved changes documented and communicated to the team and stakeholders?" },
+      { key: "baselineUpdates", label: "Baseline Updates", type: "textarea", placeholder: "How and when do approved changes get reflected in the project baseline (scope, schedule, budget)?" },
+    ],
+    tips: {
+      waterfall: {
+        changeRequestProcess: "Route every change through a formal Change Control Board — informal changes should not be allowed once the baseline is set.",
+        approvalAuthority: "Sponsor or Change Control Board approval should be required for any scope, schedule, or budget impact, however small.",
+      },
+      agile: {
+        changeRequestProcess: "Treat backlog reprioritization as your primary change mechanism — most changes don't need a formal request.",
+        approvalAuthority: "Product Owner typically has authority to reprioritize the backlog; reserve formal approval for changes to the overall project charter.",
+      },
+      hybrid: {
+        changeRequestProcess: "Use a formal Change Control Board for fixed-scope workstreams, and lightweight backlog reprioritization for iterative ones.",
+        approvalAuthority: "Define clearly which workstreams require formal sign-off and which can be adjusted through backlog reprioritization alone.",
+      },
+    },
+  },
+];
 
 /* ============================================================
    COMPONENTS — Shared UI
@@ -1681,7 +2066,7 @@ function ScopePlanDocument({ data, detail }) {
   );
 }
 
-function ScopePlanBuilder({ recommended, detail, projectTitle, onBack }) {
+function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext }) {
   const [data, setData] = useState({ projectTitle: projectTitle || "" });
   const [view, setView] = useState("form"); // "form" | "preview"
   const [email, setEmail] = useState("");
@@ -1776,6 +2161,17 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack }) {
             <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
           )}
         </Card>
+
+        {onNext && (
+          <div className="text-center pb-4 pt-2">
+            <button
+              onClick={() => onNext(data.projectTitle)}
+              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+            >
+              👥 Build Your Resource Management Plan →
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -1842,11 +2238,218 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack }) {
 }
 
 /* ============================================================
+   COMPONENTS — Generic Plan Builder (Resource, Quality, Risk,
+   Communications, Stakeholder Engagement, Procurement, Change)
+   ============================================================ */
+
+function PlanDocument({ planType, data, detail }) {
+  const section = (label, value) => {
+    if (!value || !value.trim()) return null;
+    return (
+      <div className="mb-5">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div id="plan-print-area">
+      <Card className="p-8">
+        <div className="text-center border-b border-slate-200 pb-5 mb-6">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">{planType.docLabel}</div>
+          <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+            <span>{detail.icon}</span>
+            <span>Recommended methodology: <strong>{detail.name}</strong></span>
+          </div>
+        </div>
+
+        {planType.fields.filter(f => f.key !== "title").map(f => (
+          <div key={f.key}>{section(f.label, data[f.key])}</div>
+        ))}
+
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+          </div>
+          <div>
+            <div className="border-b border-slate-400 pb-6 mb-1"></div>
+            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNext, nextLabel }) {
+  const [data, setData] = useState({ title: projectTitle || "" });
+  const [view, setView] = useState("form"); // "form" | "preview"
+  const [email, setEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState("idle"); // idle | sending | sent | error
+
+  const handleChange = (key, value) => setData(prev => ({ ...prev, [key]: value }));
+
+  const requiredFilled = planType.fields
+    .filter(f => f.required)
+    .every(f => (data[f.key] || "").trim().length > 0);
+
+  const tips = planType.tips[recommended] || {};
+
+  const buildPlanText = () => {
+    const lines = [`${planType.docLabel.toUpperCase()}: ${data.title || "Untitled Project"}`, ""];
+    lines.push(`Recommended Methodology: ${detail.name}`);
+    lines.push("");
+    planType.fields.filter(f => f.key !== "title").forEach(f => {
+      if (data[f.key] && data[f.key].trim()) {
+        lines.push(f.label.toUpperCase());
+        lines.push(data[f.key].trim());
+        lines.push("");
+      }
+    });
+    return lines.join("\n");
+  };
+
+  const downloadTxt = () => {
+    const blob = new Blob([buildPlanText()], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(data.title || planType.docLabel).replace(/\s+/g, "-").toLowerCase()}-${planType.key}-plan.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const emailPlan = () => {
+    if (!email.trim()) return;
+    setEmailStatus("sending");
+    emailjs.send("service_le6k55r", "template_0sbn1r6", {
+      to_email: email.trim(),
+      project_title: `${data.title || "Untitled Project"} — ${planType.docLabel}`,
+      message: buildPlanText(),
+    }).then(() => {
+      setEmailStatus("sent");
+    }).catch((err) => {
+      console.error("EmailJS send failed:", err);
+      setEmailStatus("error");
+    });
+  };
+
+  if (view === "preview") {
+    return (
+      <div className="fade-in space-y-5">
+        <PlanDocument planType={planType} data={data} detail={detail} />
+        <div className="flex flex-wrap justify-center gap-3">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+            ← Edit Plan
+          </button>
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+            ⬇ Download as .txt
+          </button>
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+            🖨 Print / Save as PDF
+          </button>
+        </div>
+
+        <Card className="p-4 max-w-md mx-auto">
+          <div className="text-sm font-semibold text-slate-900 mb-1">📧 Email Yourself This {planType.docLabel}</div>
+          <p className="text-xs text-slate-500 mb-3">We'll send the full plan straight to your inbox.</p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={e => { setEmail(e.target.value); if (emailStatus !== "sending") setEmailStatus("idle"); }}
+              placeholder="you@email.com"
+              className="flex-1 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none px-3 py-2 text-sm"
+            />
+            <button
+              onClick={emailPlan}
+              disabled={!email.trim() || emailStatus === "sending"}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            >
+              {emailStatus === "sending" ? "Sending…" : "Send"}
+            </button>
+          </div>
+          {emailStatus === "sent" && (
+            <p className="text-xs text-green-600 font-medium mt-2">✓ Sent! Check your inbox.</p>
+          )}
+          {emailStatus === "error" && (
+            <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
+          )}
+        </Card>
+
+        {onNext && (
+          <div className="text-center pb-4 pt-2">
+            <button
+              onClick={() => onNext(data.title)}
+              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+            >
+              {nextLabel} →
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="fade-in space-y-5">
+      <div className="text-center mb-2">
+        <div className="text-4xl mb-2">{planType.icon}</div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">{planType.formTitle}</h2>
+        <p className="text-slate-500 text-sm max-w-md mx-auto">{planType.formIntro}</p>
+      </div>
+
+      <Card className="p-5">
+        <h3 className="font-semibold text-slate-900 mb-2 text-sm">{planType.introTitle}</h3>
+        <p className="text-xs text-slate-600 leading-relaxed mb-3">{planType.introBody}</p>
+        <ul className="space-y-1.5">
+          {planType.introBullets.map((b, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      <Card className="p-6">
+        {planType.fields.map(field => (
+          <CharterField
+            key={field.key}
+            field={field}
+            value={data[field.key] || ""}
+            onChange={handleChange}
+            tip={tips[field.key]}
+            recommended={recommended}
+          />
+        ))}
+      </Card>
+
+      <div className="flex justify-between items-center pb-8">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+          ← Back
+        </button>
+        <button
+          onClick={() => setView("preview")}
+          disabled={!requiredFilled}
+          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Generate {planType.docLabel} →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
    COMPONENTS — Assessment Container
    ============================================================ */
 
 function AssessSection() {
-  const [step, setStep] = useState("intro"); // "intro" | number | "results" | "charter" | "scopePlan"
+  const [step, setStep] = useState("intro"); // "intro" | number | "results" | "charter" | "scopePlan" | one of PLAN_ORDER
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
   const [scopeTitle, setScopeTitle] = useState("");
@@ -1913,6 +2516,27 @@ function AssessSection() {
           detail={METHODOLOGY_DETAILS[result.recommended]}
           projectTitle={scopeTitle}
           onBack={() => setStep("charter")}
+          onNext={(title) => { setScopeTitle(title); setStep(PLAN_ORDER[0]); }}
+        />
+      </div>
+    );
+  }
+
+  if (PLAN_ORDER.includes(step) && result) {
+    const planType = PLAN_TYPES.find(p => p.key === step);
+    const idx = PLAN_ORDER.indexOf(step);
+    const prevStep = idx === 0 ? "scopePlan" : PLAN_ORDER[idx - 1];
+    const nextPlanType = idx < PLAN_ORDER.length - 1 ? PLAN_TYPES.find(p => p.key === PLAN_ORDER[idx + 1]) : null;
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <PlanBuilder
+          planType={planType}
+          recommended={result.recommended}
+          detail={METHODOLOGY_DETAILS[result.recommended]}
+          projectTitle={scopeTitle}
+          onBack={() => setStep(prevStep)}
+          onNext={nextPlanType ? (title) => { setScopeTitle(title); setStep(nextPlanType.key); } : null}
+          nextLabel={nextPlanType ? `${nextPlanType.icon} Build Your ${nextPlanType.docLabel}` : null}
         />
       </div>
     );
