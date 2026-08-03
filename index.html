@@ -1522,7 +1522,7 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
   const emailCharter = () => {
     if (!email.trim()) return;
     setEmailStatus("sending");
-    emailjs.send("service_l7dxn2u", "template_0sbn1r6", {
+    emailjs.send("service_le6k55r", "template_0sbn1r6", {
       to_email: email.trim(),
       project_title: data.title || "Untitled Project",
       message: buildCharterText(),
