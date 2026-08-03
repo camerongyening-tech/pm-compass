@@ -1010,6 +1010,12 @@ const PLAN_TYPES = [
   },
 ];
 
+const DOCUMENT_HUB_ITEMS = [
+  { key: "charter", icon: "📄", label: "Project Charter", desc: "Formally authorizes the project — objectives, scope, budget, and milestones." },
+  { key: "scopePlan", icon: "📋", label: "Scope Management Plan", desc: "How scope gets defined, broken down, verified, and controlled." },
+  ...PLAN_TYPES.map(p => ({ key: p.key, icon: p.icon, label: p.docLabel, desc: p.formIntro })),
+];
+
 /* ============================================================
    COMPONENTS — Shared UI
    ============================================================ */
@@ -1331,7 +1337,7 @@ function ScoreBar({ label, pct, color, isTop }) {
   );
 }
 
-function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter }) {
+function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter, onOpenHub }) {
   const detail = METHODOLOGY_DETAILS[recommended];
   const colorMap = {
     blue: { header: "bg-blue-600", badge: "bg-blue-100 text-blue-800", ring: "ring-blue-300" },
@@ -1415,6 +1421,12 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter 
           className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
         >
           📄 Build Your Project Charter →
+        </button>
+      </div>
+
+      <div className="text-center">
+        <button onClick={onOpenHub} className="text-sm text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2">
+          🗂️ Or choose a specific document to build
         </button>
       </div>
 
@@ -2444,6 +2456,36 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
   );
 }
 
+function DocumentHub({ onSelect, onBack }) {
+  return (
+    <div className="fade-in">
+      <div className="text-center mb-8">
+        <div className="text-5xl mb-3">🗂️</div>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Choose a Document to Build</h1>
+        <p className="text-slate-500 text-lg max-w-md mx-auto">Jump straight to any planning document — no need to go in order.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+        {DOCUMENT_HUB_ITEMS.map(item => (
+          <button
+            key={item.key}
+            onClick={() => onSelect(item.key)}
+            className="text-left p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:border-blue-300 hover:shadow-md transition-all"
+          >
+            <div className="text-2xl mb-1">{item.icon}</div>
+            <div className="font-semibold text-slate-900 text-sm mb-1">{item.label}</div>
+            <div className="text-xs text-slate-500 leading-relaxed">{item.desc}</div>
+          </button>
+        ))}
+      </div>
+      <div className="text-center pb-8">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+          ← Back to Results
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ============================================================
    COMPONENTS — Assessment Container
    ============================================================ */
@@ -2490,6 +2532,18 @@ function AssessSection() {
           answers={answers}
           onRetake={retake}
           onBuildCharter={() => setStep("charter")}
+          onOpenHub={() => setStep("hub")}
+        />
+      </div>
+    );
+  }
+
+  if (step === "hub" && result) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <DocumentHub
+          onSelect={(key) => setStep(key)}
+          onBack={() => setStep("results")}
         />
       </div>
     );
@@ -2501,7 +2555,7 @@ function AssessSection() {
         <CharterBuilder
           recommended={result.recommended}
           detail={METHODOLOGY_DETAILS[result.recommended]}
-          onBack={() => setStep("results")}
+          onBack={() => setStep("hub")}
           onBuildScopePlan={(title) => { setScopeTitle(title); setStep("scopePlan"); }}
         />
       </div>
@@ -2515,7 +2569,7 @@ function AssessSection() {
           recommended={result.recommended}
           detail={METHODOLOGY_DETAILS[result.recommended]}
           projectTitle={scopeTitle}
-          onBack={() => setStep("charter")}
+          onBack={() => setStep("hub")}
           onNext={(title) => { setScopeTitle(title); setStep(PLAN_ORDER[0]); }}
         />
       </div>
@@ -2525,7 +2579,6 @@ function AssessSection() {
   if (PLAN_ORDER.includes(step) && result) {
     const planType = PLAN_TYPES.find(p => p.key === step);
     const idx = PLAN_ORDER.indexOf(step);
-    const prevStep = idx === 0 ? "scopePlan" : PLAN_ORDER[idx - 1];
     const nextPlanType = idx < PLAN_ORDER.length - 1 ? PLAN_TYPES.find(p => p.key === PLAN_ORDER[idx + 1]) : null;
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -2534,7 +2587,7 @@ function AssessSection() {
           recommended={result.recommended}
           detail={METHODOLOGY_DETAILS[result.recommended]}
           projectTitle={scopeTitle}
-          onBack={() => setStep(prevStep)}
+          onBack={() => setStep("hub")}
           onNext={nextPlanType ? (title) => { setScopeTitle(title); setStep(nextPlanType.key); } : null}
           nextLabel={nextPlanType ? `${nextPlanType.icon} Build Your ${nextPlanType.docLabel}` : null}
         />
