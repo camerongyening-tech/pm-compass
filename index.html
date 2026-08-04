@@ -2678,6 +2678,35 @@ function CommunitySection() {
   const [profile, setProfile] = useState({ name: "", dob: "", email: "", age: "", education: "" });
   const updateProfile = (key, value) => setProfile(prev => ({ ...prev, [key]: value }));
   const profileValid = profile.name.trim() && profile.email.trim();
+  const [submitStatus, setSubmitStatus] = useState("idle"); // idle | sending | error
+
+  const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbz7QOG-zxg_nVyM9fp4B1NgnX7LyMi542RiefviCRyoshrbchWPHPqbauAacNXqyDEE/exec";
+
+  const submitSignup = () => {
+    setSubmitStatus("sending");
+    const payload = {
+      name: profile.name.trim(),
+      email: profile.email.trim(),
+      dob: profile.dob,
+      age: profile.age,
+      education: profile.education,
+      reason: reason,
+      hasProjects: hasProjects,
+      projectDetails: projectDetails.trim(),
+    };
+    fetch(GOOGLE_SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    }).then(() => {
+      setSubmitStatus("idle");
+      setStep("joined");
+    }).catch((err) => {
+      console.error("Sign-up submission failed:", err);
+      setSubmitStatus("error");
+    });
+  };
 
   const coreIdeas = [
     { icon: "🤝", title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
@@ -2881,16 +2910,20 @@ function CommunitySection() {
             </div>
           </div>
 
+          {submitStatus === "error" && (
+            <p className="text-xs text-red-600 font-medium mb-3">Something went wrong submitting your info — you can try again, or continue anyway.</p>
+          )}
+
           <div className="flex justify-between items-center">
             <button onClick={() => setStep("projects")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
               ← Back
             </button>
             <button
-              onClick={() => setStep("joined")}
-              disabled={!profileValid}
+              onClick={submitSignup}
+              disabled={!profileValid || submitStatus === "sending"}
               className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Join the Community →
+              {submitStatus === "sending" ? "Joining…" : "Join the Community →"}
             </button>
           </div>
         </Card>
