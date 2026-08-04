@@ -2671,8 +2671,10 @@ const JOIN_REASON_MESSAGES = {
 };
 
 function CommunitySection() {
-  const [step, setStep] = useState("intro"); // "intro" | "why" | "joined"
+  const [step, setStep] = useState("intro"); // "intro" | "why" | "projects" | "joined"
   const [reason, setReason] = useState(null);
+  const [hasProjects, setHasProjects] = useState(null); // null | "yes" | "no"
+  const [projectDetails, setProjectDetails] = useState("");
 
   const coreIdeas = [
     { icon: "🤝", title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
@@ -2691,7 +2693,7 @@ function CommunitySection() {
         </p>
       </div>
 
-      {step !== "why" && (
+      {step !== "why" && step !== "projects" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {coreIdeas.map((idea, i) => (
             <Card key={i} className="p-5">
@@ -2745,8 +2747,61 @@ function CommunitySection() {
               ← Back
             </button>
             <button
-              onClick={() => setStep("joined")}
+              onClick={() => setStep("projects")}
               disabled={!reason}
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Continue →
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {step === "projects" && (
+        <Card className="p-6 max-w-lg mx-auto fade-in">
+          <h2 className="text-lg font-bold text-slate-900 mb-1">Do you have any projects you're currently working on?</h2>
+          <p className="text-sm text-slate-500 mb-4">This helps us match you with relevant examples and discussions.</p>
+          <div className="flex gap-3 mb-4">
+            <button
+              onClick={() => setHasProjects("yes")}
+              className={`flex-1 p-4 rounded-xl border-2 text-sm font-semibold transition-all ${
+                hasProjects === "yes"
+                  ? "border-blue-500 bg-blue-50 text-blue-900"
+                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+              }`}
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => { setHasProjects("no"); setProjectDetails(""); }}
+              className={`flex-1 p-4 rounded-xl border-2 text-sm font-semibold transition-all ${
+                hasProjects === "no"
+                  ? "border-blue-500 bg-blue-50 text-blue-900"
+                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+              }`}
+            >
+              No
+            </button>
+          </div>
+          {hasProjects === "yes" && (
+            <div className="mb-5 fade-in">
+              <label className="block text-sm font-semibold text-slate-900 mb-1">What are you working on? (optional)</label>
+              <textarea
+                value={projectDetails}
+                onChange={e => setProjectDetails(e.target.value)}
+                placeholder="e.g. Redesigning our checkout flow, launching a new product line, migrating to a new CRM..."
+                rows={3}
+                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+              />
+            </div>
+          )}
+          <div className="flex justify-between items-center">
+            <button onClick={() => setStep("why")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+              ← Back
+            </button>
+            <button
+              onClick={() => setStep("joined")}
+              disabled={!hasProjects}
               className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Join the Community →
@@ -2760,6 +2815,9 @@ function CommunitySection() {
           <div className="text-4xl mb-2">🎉</div>
           <p className="text-slate-700 font-semibold">You're in!</p>
           <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">{JOIN_REASON_MESSAGES[reason]}</p>
+          {hasProjects === "yes" && projectDetails.trim() && (
+            <p className="text-slate-400 text-xs mt-2 max-w-sm mx-auto">Noted — we'll keep "{projectDetails.trim()}" in mind when surfacing relevant examples and discussions.</p>
+          )}
           <p className="text-xs text-slate-400 mt-3">More features coming soon</p>
         </div>
       )}
