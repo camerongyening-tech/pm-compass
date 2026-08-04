@@ -1337,7 +1337,7 @@ function ScoreBar({ label, pct, color, isTop }) {
   );
 }
 
-function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter, onOpenHub }) {
+function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocument }) {
   const detail = METHODOLOGY_DETAILS[recommended];
   const colorMap = {
     blue: { header: "bg-blue-600", badge: "bg-blue-100 text-blue-800", ring: "ring-blue-300" },
@@ -1414,20 +1414,9 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onBuildCharter,
         </div>
       </Card>
 
-      {/* Next step: Charter */}
-      <div className="text-center pt-2">
-        <button
-          onClick={onBuildCharter}
-          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
-        >
-          📄 Build Your Project Charter →
-        </button>
-      </div>
-
-      <div className="text-center">
-        <button onClick={onOpenHub} className="text-sm text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2">
-          🗂️ Or choose a specific document to build
-        </button>
+      {/* Choose a planning document */}
+      <div className="pt-2">
+        <DocumentHub onSelect={onSelectDocument} compact />
       </div>
 
       {/* Retake */}
@@ -2456,32 +2445,49 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
   );
 }
 
-function DocumentHub({ onSelect, onBack }) {
+function DocumentHub({ onSelect, onBack, compact }) {
+  const [selected, setSelected] = useState(DOCUMENT_HUB_ITEMS[0].key);
+  const selectedItem = DOCUMENT_HUB_ITEMS.find(i => i.key === selected);
+
   return (
     <div className="fade-in">
-      <div className="text-center mb-8">
-        <div className="text-5xl mb-3">🗂️</div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Choose a Document to Build</h1>
-        <p className="text-slate-500 text-lg max-w-md mx-auto">Jump straight to any planning document — no need to go in order.</p>
+      <div className="text-center mb-5">
+        {!compact && <div className="text-5xl mb-3">🗂️</div>}
+        <h2 className={compact ? "text-lg font-bold text-slate-900 mb-1" : "text-3xl font-bold text-slate-900 mb-2"}>
+          {compact ? "Choose a Document to Build" : "Choose a Document to Build"}
+        </h2>
+        <p className={compact ? "text-slate-500 text-sm max-w-md mx-auto" : "text-slate-500 text-lg max-w-md mx-auto"}>
+          Pick which planning document you want to work on — no need to go in order.
+        </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-        {DOCUMENT_HUB_ITEMS.map(item => (
-          <button
-            key={item.key}
-            onClick={() => onSelect(item.key)}
-            className="text-left p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:border-blue-300 hover:shadow-md transition-all"
-          >
-            <div className="text-2xl mb-1">{item.icon}</div>
-            <div className="font-semibold text-slate-900 text-sm mb-1">{item.label}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{item.desc}</div>
-          </button>
-        ))}
-      </div>
-      <div className="text-center pb-8">
-        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
-          ← Back to Results
+
+      <Card className="p-6 max-w-md mx-auto">
+        <label className="block text-sm font-semibold text-slate-900 mb-2">Document</label>
+        <select
+          value={selected}
+          onChange={e => setSelected(e.target.value)}
+          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700 mb-2"
+        >
+          {DOCUMENT_HUB_ITEMS.map(item => (
+            <option key={item.key} value={item.key}>{item.icon} {item.label}</option>
+          ))}
+        </select>
+        {selectedItem && <p className="text-xs text-slate-500 mb-4">{selectedItem.desc}</p>}
+        <button
+          onClick={() => onSelect(selected)}
+          className="w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+        >
+          Go →
         </button>
-      </div>
+      </Card>
+
+      {onBack && (
+        <div className="text-center pt-6 pb-8">
+          <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+            ← Back to Results
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -2531,8 +2537,7 @@ function AssessSection() {
           recommended={result.recommended}
           answers={answers}
           onRetake={retake}
-          onBuildCharter={() => setStep("charter")}
-          onOpenHub={() => setStep("hub")}
+          onSelectDocument={(key) => setStep(key)}
         />
       </div>
     );
