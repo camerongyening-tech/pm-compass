@@ -2671,10 +2671,13 @@ const JOIN_REASON_MESSAGES = {
 };
 
 function CommunitySection() {
-  const [step, setStep] = useState("intro"); // "intro" | "why" | "projects" | "joined"
+  const [step, setStep] = useState("intro"); // "intro" | "why" | "projects" | "details" | "joined"
   const [reason, setReason] = useState(null);
   const [hasProjects, setHasProjects] = useState(null); // null | "yes" | "no"
   const [projectDetails, setProjectDetails] = useState("");
+  const [profile, setProfile] = useState({ name: "", dob: "", email: "", age: "", education: "" });
+  const updateProfile = (key, value) => setProfile(prev => ({ ...prev, [key]: value }));
+  const profileValid = profile.name.trim() && profile.email.trim();
 
   const coreIdeas = [
     { icon: "🤝", title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
@@ -2693,7 +2696,7 @@ function CommunitySection() {
         </p>
       </div>
 
-      {step !== "why" && step !== "projects" && (
+      {step !== "why" && step !== "projects" && step !== "details" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {coreIdeas.map((idea, i) => (
             <Card key={i} className="p-5">
@@ -2800,8 +2803,91 @@ function CommunitySection() {
               ← Back
             </button>
             <button
-              onClick={() => setStep("joined")}
+              onClick={() => setStep("details")}
               disabled={!hasProjects}
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Continue →
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {step === "details" && (
+        <Card className="p-6 max-w-lg mx-auto fade-in">
+          <h2 className="text-lg font-bold text-slate-900 mb-1">Tell us a bit about yourself</h2>
+          <p className="text-sm text-slate-500 mb-4">Just the basics, so we can set up your profile.</p>
+
+          <div className="space-y-4 mb-5">
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-1">Full Name <span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                value={profile.name}
+                onChange={e => updateProfile("name", e.target.value)}
+                placeholder="Jordan Lee"
+                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-1">Email <span className="text-red-500">*</span></label>
+              <input
+                type="email"
+                value={profile.email}
+                onChange={e => updateProfile("email", e.target.value)}
+                placeholder="you@email.com"
+                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-1">Date of Birth</label>
+                <input
+                  type="date"
+                  value={profile.dob}
+                  onChange={e => updateProfile("dob", e.target.value)}
+                  className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-1">Age</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="120"
+                  value={profile.age}
+                  onChange={e => updateProfile("age", e.target.value)}
+                  placeholder="30"
+                  className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-1">Education</label>
+              <select
+                value={profile.education}
+                onChange={e => updateProfile("education", e.target.value)}
+                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+              >
+                <option value="">Select one</option>
+                <option value="high-school">High School</option>
+                <option value="associates">Associate's Degree</option>
+                <option value="bachelors">Bachelor's Degree</option>
+                <option value="masters">Master's Degree</option>
+                <option value="doctorate">Doctorate</option>
+                <option value="other">Other</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <button onClick={() => setStep("projects")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+              ← Back
+            </button>
+            <button
+              onClick={() => setStep("joined")}
+              disabled={!profileValid}
               className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Join the Community →
@@ -2813,7 +2899,7 @@ function CommunitySection() {
       {step === "joined" && (
         <div className="text-center fade-in">
           <div className="text-4xl mb-2">🎉</div>
-          <p className="text-slate-700 font-semibold">You're in!</p>
+          <p className="text-slate-700 font-semibold">You're in{profile.name.trim() ? `, ${profile.name.trim()}` : ""}!</p>
           <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">{JOIN_REASON_MESSAGES[reason]}</p>
           {hasProjects === "yes" && projectDetails.trim() && (
             <p className="text-slate-400 text-xs mt-2 max-w-sm mx-auto">Noted — we'll keep "{projectDetails.trim()}" in mind when surfacing relevant examples and discussions.</p>
