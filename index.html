@@ -26,39 +26,8 @@
   <style>
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(160deg, #eef6ff 0%, #eefcf5 48%, #faf7f2 100%);
-      background-attachment: fixed;
+      background: #eaf2fe;
       min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-    }
-    body::before, body::after {
-      content: "";
-      position: fixed;
-      border-radius: 9999px;
-      filter: blur(90px);
-      z-index: -1;
-      pointer-events: none;
-    }
-    body::before {
-      width: 480px;
-      height: 480px;
-      background: #bfdbfe;
-      opacity: 0.35;
-      top: -160px;
-      right: -120px;
-    }
-    body::after {
-      width: 420px;
-      height: 420px;
-      background: #bbf7d0;
-      opacity: 0.35;
-      bottom: -140px;
-      left: -120px;
-    }
-    @media (max-width: 640px) {
-      body::before { width: 280px; height: 280px; top: -100px; right: -80px; }
-      body::after { width: 240px; height: 240px; bottom: -80px; left: -80px; }
     }
     .fade-in { animation: fadeIn 0.4s ease-in; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
@@ -1084,7 +1053,7 @@ function Nav({ activeTab, setActiveTab }) {
     { id: "community", label: "Community", short: "Community" },
   ];
   return (
-    <header className="bg-white/85 backdrop-blur-md border-b border-slate-200/70 sticky top-0 z-50 shadow-sm">
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
           <CompassLogo className="w-6 h-6" />
@@ -1240,7 +1209,7 @@ function LearnSection() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Project Management Fundamentals</h1>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-2 tracking-tight leading-[1.05]">Project Management Fundamentals</h1>
         <p className="text-slate-500 text-lg">Tap any card to expand and dive deeper into each topic.</p>
       </div>
       <div className="space-y-3">
@@ -1378,7 +1347,7 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
       <Card className={`overflow-hidden`}>
         <div className={`${c.header} p-6 text-white`}>
           <div className="text-sm font-medium opacity-80 mb-1">Your Recommended Methodology</div>
-          <h2 className="text-3xl font-bold mb-1">{detail.name}</h2>
+          <h2 className="text-4xl font-extrabold mb-1 tracking-tight">{detail.name}</h2>
           <p className="opacity-90 text-sm">{detail.tagline}</p>
         </div>
         <div className="p-6">
@@ -2616,7 +2585,7 @@ function AssessSection() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <CompassLogo className="w-16 h-16 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">Find Your Method</h1>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.05]">Find Your Method</h1>
           <p className="text-slate-500 text-lg max-w-md mx-auto">
             Answer 7 quick questions about your company and projects. We'll recommend the best project management methodology — and explain why.
           </p>
@@ -2728,7 +2697,7 @@ function CommunitySection() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
         <CompassLogo className="w-14 h-14 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-slate-900 mb-3">PM Compass Community</h1>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.05]">PM Compass Community</h1>
         <p className="text-slate-500 text-lg max-w-lg mx-auto">
           Assess and Learn help you plan your own project. Community connects you to people doing the same thing — so you can get input, share progress, and see how similar projects were planned by others.
         </p>
@@ -2964,7 +2933,7 @@ function App() {
         {activeTab === "community" && <CommunitySection />}
       </main>
 
-      <footer className="border-t border-slate-200/70 bg-white/60 backdrop-blur-sm mt-8 py-6 text-center text-xs text-slate-400">
+      <footer className="border-t border-slate-200 bg-white mt-8 py-6 text-center text-xs text-slate-400">
         PM Compass · Built on standard PM foundations (PMI/PMBOK, Agile Manifesto) · For educational use
       </footer>
     </div>
