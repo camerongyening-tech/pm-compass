@@ -1048,6 +1048,7 @@ function Card({ children, className = "" }) {
 
 function Nav({ activeTab, setActiveTab }) {
   const tabs = [
+    { id: "home", label: "Home", short: "Home" },
     { id: "learn", label: "Learn PM", short: "Learn" },
     { id: "assess", label: "Find Your Method", short: "Assess" },
     { id: "community", label: "Community", short: "Community" },
@@ -2917,17 +2918,127 @@ function CommunitySection() {
   );
 }
 
-function App() {
-  const [activeTab, setActiveTab] = useState("learn");
+function HomeFeatureIcon({ children, bgClass }) {
+  return (
+    <div className={`w-12 h-12 rounded-2xl ${bgClass} flex items-center justify-center flex-shrink-0`}>
+      {children}
+    </div>
+  );
+}
+
+function HomeSection({ onNavigate }) {
+  const features = [
+    {
+      key: "learn",
+      title: "Learn PM",
+      desc: "10 bite-sized lessons covering the fundamentals every project manager needs.",
+      bg: "bg-purple-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white">
+          <path d="M4 5.5C4 4.67 4.67 4 5.5 4H12V20H5.5C4.67 20 4 19.33 4 18.5V5.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M20 5.5C20 4.67 19.33 4 18.5 4H12V20H18.5C19.33 20 20 19.33 20 18.5V5.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    {
+      key: "assess",
+      title: "Find Your Method",
+      desc: "A 7-question assessment that recommends Waterfall, Agile, or Hybrid for your project.",
+      bg: "bg-emerald-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="12" cy="12" r="0.8" fill="currentColor" />
+        </svg>
+      ),
+    },
+    {
+      key: "charter",
+      title: "Build Your Plans",
+      desc: "Generate a Project Charter, Scope Plan, and every core PM document — with guided examples.",
+      bg: "bg-orange-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white">
+          <rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M8 8H16M8 12H16M8 16H12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    {
+      key: "community",
+      title: "Community",
+      desc: "Connect with other PMs, share progress, and see how similar projects were planned.",
+      bg: "bg-pink-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white">
+          <circle cx="9" cy="9" r="3" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="17" cy="10" r="2.4" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M4 19c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M14.5 15.2c2.2.3 3.9 2.1 3.9 4.3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="text-center mb-14">
+        <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-1.5 mb-6 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="text-xs font-semibold text-slate-600">Free guided project planning</span>
+        </div>
+        <h1 className="text-5xl sm:text-6xl font-extrabold text-slate-900 mb-4 tracking-tight leading-[1.05]">
+          Plan projects.<br />Not headaches.
+        </h1>
+        <p className="text-slate-500 text-lg max-w-xl mx-auto mb-8">
+          PM Compass guides you from "I don't know where to start" to a complete, professional project plan — no PM background required.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={() => onNavigate("assess")}
+            className="bg-blue-600 text-white px-7 py-3.5 rounded-xl font-semibold text-base hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            Find Your Method →
+          </button>
+          <button
+            onClick={() => onNavigate("learn")}
+            className="bg-white text-slate-700 border border-slate-200 px-7 py-3.5 rounded-xl font-semibold text-base hover:bg-slate-50 transition-colors"
+          >
+            Browse Lessons
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {features.map(f => (
+          <button
+            key={f.key}
+            onClick={() => onNavigate(f.key === "charter" ? "assess" : f.key)}
+            className="text-left bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-slate-100 p-6 hover:-translate-y-0.5 hover:shadow-lg transition-all"
+          >
+            <HomeFeatureIcon bgClass={f.bg}>{f.icon}</HomeFeatureIcon>
+            <h3 className="font-bold text-slate-900 text-lg mt-4 mb-1">{f.title}</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [activeTab, setActiveTab] = useState("home");
+
+  return (
+    <div className="min-h-screen">
       <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Hidden buttons for cross-tab navigation */}
       <button data-tab="assess" onClick={() => setActiveTab("assess")} className="hidden" />
 
       <main>
+        {activeTab === "home" && <HomeSection onNavigate={setActiveTab} />}
         {activeTab === "learn" && <LearnSection />}
         {activeTab === "assess" && <AssessSection />}
         {activeTab === "community" && <CommunitySection />}
