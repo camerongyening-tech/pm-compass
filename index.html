@@ -86,7 +86,6 @@ const PM_CONCEPTS = [
   {
     id: "what-is-pm",
     title: "What Is Project Management?",
-    icon: "🎯",
     color: "blue",
     summary: "A project is temporary, unique, and goal-oriented. Project management is the discipline of planning, executing, and closing that work.",
     bullets: [
@@ -100,7 +99,6 @@ const PM_CONCEPTS = [
   {
     id: "pm-role",
     title: "The Project Manager's Role",
-    icon: "👩‍💼",
     color: "violet",
     summary: "The PM is accountable for delivering the project on time, on budget, and within scope — while leading the team and keeping stakeholders informed.",
     bullets: [
@@ -115,7 +113,6 @@ const PM_CONCEPTS = [
   {
     id: "triple-constraint",
     title: "The Triple Constraint",
-    icon: "🔺",
     color: "amber",
     summary: "Every project is bounded by Scope, Time, and Cost. Changing one always affects the others.",
     bullets: [
@@ -129,7 +126,6 @@ const PM_CONCEPTS = [
   {
     id: "lifecycle",
     title: "Project Life Cycle",
-    icon: "🔄",
     color: "green",
     summary: "Projects move through four phases: Initiation → Planning → Execution → Closing.",
     phases: [
@@ -142,7 +138,6 @@ const PM_CONCEPTS = [
   {
     id: "stakeholders",
     title: "Stakeholders & Stakeholder Management",
-    icon: "🤝",
     color: "pink",
     summary: "A stakeholder is anyone who can affect or be affected by your project. Managing their expectations is critical to success.",
     bullets: [
@@ -156,7 +151,6 @@ const PM_CONCEPTS = [
   {
     id: "org-structures",
     title: "Organizational Structures",
-    icon: "🏗️",
     color: "cyan",
     summary: "The structure of your organization shapes how much authority a PM has and how resources are shared.",
     orgs: [
@@ -183,27 +177,23 @@ const PM_CONCEPTS = [
   {
     id: "methodologies",
     title: "Waterfall vs Agile",
-    icon: "⚡",
     color: "indigo",
     summary: "Waterfall is sequential and plan-driven. Agile is iterative and change-friendly. Hybrid blends both.",
     methods: [
       {
         name: "Waterfall",
-        icon: "💧",
         when: "Requirements are stable, deliverable is well-defined, compliance is critical",
         how: "Linear phases: Requirements → Design → Build → Test → Deploy. Each phase completes before the next begins.",
         examples: "Construction, manufacturing, government contracts, regulated industries",
       },
       {
         name: "Agile",
-        icon: "🔁",
         when: "Requirements evolve, fast feedback loops matter, product is being discovered",
         how: "Short sprints (1–4 weeks) delivering working increments. Continuous planning and retrospectives.",
         examples: "Software development, product design, marketing campaigns",
       },
       {
         name: "Hybrid",
-        icon: "🔀",
         when: "Some parts are fixed (compliance, architecture) while others are exploratory",
         how: "Use Waterfall for stable phases (e.g. infrastructure) and Agile for dynamic phases (e.g. features).",
         examples: "Digital transformation, ERP implementations, regulated software",
@@ -213,7 +203,6 @@ const PM_CONCEPTS = [
   {
     id: "risk",
     title: "Risk Management",
-    icon: "⚠️",
     color: "red",
     summary: "Risk management is the process of identifying, analyzing, and responding to potential threats — before they become problems.",
     bullets: [
@@ -227,7 +216,6 @@ const PM_CONCEPTS = [
   {
     id: "smart-goals",
     title: "SMART Goals",
-    icon: "🎯",
     color: "teal",
     summary: "Good project objectives are SMART: Specific, Measurable, Achievable, Relevant, and Time-bound.",
     bullets: [
@@ -242,7 +230,6 @@ const PM_CONCEPTS = [
   {
     id: "key-docs",
     title: "Key Project Documents",
-    icon: "📄",
     color: "orange",
     summary: "Four documents form the backbone of most projects: Charter, Stakeholder Register, Communication Plan, and Risk Register.",
     docs: [
@@ -379,7 +366,6 @@ function computeScores(answers) {
 const METHODOLOGY_DETAILS = {
   waterfall: {
     name: "Waterfall",
-    icon: "💧",
     color: "blue",
     tagline: "Plan it completely, then build it sequentially.",
     why: "Your answers indicate stable requirements, a predictable environment, and a need for comprehensive upfront planning. Waterfall's sequential, phase-by-phase approach will give your team clear milestones, defined deliverables, and a controlled path from start to finish.",
@@ -402,7 +388,6 @@ const METHODOLOGY_DETAILS = {
   },
   agile: {
     name: "Agile",
-    icon: "🔁",
     color: "green",
     tagline: "Deliver in sprints, learn as you go.",
     why: "Your answers point to evolving requirements, a need for flexibility, and frequent stakeholder feedback. Agile's iterative sprint model means you'll deliver working value every 2–4 weeks, adapt to change quickly, and keep stakeholders closely engaged throughout.",
@@ -425,7 +410,6 @@ const METHODOLOGY_DETAILS = {
   },
   hybrid: {
     name: "Hybrid",
-    icon: "🔀",
     color: "purple",
     tagline: "Plan what you know. Discover what you don't.",
     why: "Your answers show a mix of stable and dynamic elements. A Hybrid approach lets you apply Waterfall's rigor where requirements are fixed (e.g. compliance, infrastructure, contracts) and Agile's flexibility where discovery is needed (e.g. user-facing features, integrations).",
@@ -771,7 +755,6 @@ const PLAN_ORDER = ["resource", "quality", "risk", "communications", "stakeholde
 const PLAN_TYPES = [
   {
     key: "resource",
-    icon: "👥",
     docLabel: "Resource Management Plan",
     formTitle: "Build Your Resource Management Plan",
     formIntro: "A resource management plan defines how you'll staff and equip the team to execute the schedule.",
@@ -811,7 +794,6 @@ const PLAN_TYPES = [
   },
   {
     key: "quality",
-    icon: "✅",
     docLabel: "Quality Management Plan",
     formTitle: "Build Your Quality Management Plan",
     formIntro: "A quality management plan defines the standards your deliverables must meet and how you'll verify they meet them.",
@@ -850,7 +832,6 @@ const PLAN_TYPES = [
   },
   {
     key: "risk",
-    icon: "⚠️",
     docLabel: "Risk Management Plan",
     formTitle: "Build Your Risk Management Plan",
     formIntro: "A risk management plan defines how you'll find risks before they find you.",
@@ -889,7 +870,6 @@ const PLAN_TYPES = [
   },
   {
     key: "communications",
-    icon: "💬",
     docLabel: "Communications Management Plan",
     formTitle: "Build Your Communications Management Plan",
     formIntro: "A communications management plan defines who needs to know what, how often, and through which channel.",
@@ -928,7 +908,6 @@ const PLAN_TYPES = [
   },
   {
     key: "stakeholder",
-    icon: "🤝",
     docLabel: "Stakeholder Engagement Plan",
     formTitle: "Build Your Stakeholder Engagement Plan",
     formIntro: "A stakeholder engagement plan maps influence and interest, then defines how you'll move each stakeholder toward the support you need.",
@@ -967,7 +946,6 @@ const PLAN_TYPES = [
   },
   {
     key: "procurement",
-    icon: "📦",
     docLabel: "Procurement Management Plan",
     formTitle: "Build Your Procurement Management Plan",
     formIntro: "A procurement management plan covers vendor selection and contract management — only relevant if this project involves external purchases.",
@@ -1006,7 +984,6 @@ const PLAN_TYPES = [
   },
   {
     key: "change",
-    icon: "🔁",
     docLabel: "Change Management Plan",
     formTitle: "Build Your Change Management Plan",
     formIntro: "A change management plan defines the formal process for requesting, evaluating, and approving changes to the plan.",
@@ -1046,9 +1023,9 @@ const PLAN_TYPES = [
 ];
 
 const DOCUMENT_HUB_ITEMS = [
-  { key: "charter", icon: "📄", label: "Project Charter", desc: "Formally authorizes the project — objectives, scope, budget, and milestones." },
-  { key: "scopePlan", icon: "📋", label: "Scope Management Plan", desc: "How scope gets defined, broken down, verified, and controlled." },
-  ...PLAN_TYPES.map(p => ({ key: p.key, icon: p.icon, label: p.docLabel, desc: p.formIntro })),
+  { key: "charter", label: "Project Charter", desc: "Formally authorizes the project — objectives, scope, budget, and milestones." },
+  { key: "scopePlan", label: "Scope Management Plan", desc: "How scope gets defined, broken down, verified, and controlled." },
+  ...PLAN_TYPES.map(p => ({ key: p.key, label: p.docLabel, desc: p.formIntro })),
 ];
 
 /* ============================================================
@@ -1102,9 +1079,9 @@ function Card({ children, className = "" }) {
 
 function Nav({ activeTab, setActiveTab }) {
   const tabs = [
-    { id: "learn", label: "📚 Learn PM", short: "Learn" },
-    { id: "assess", label: "🧭 Find Your Method", short: "Assess" },
-    { id: "community", label: "🌐 Community", short: "Community" },
+    { id: "learn", label: "Learn PM", short: "Learn" },
+    { id: "assess", label: "Find Your Method", short: "Assess" },
+    { id: "community", label: "Community", short: "Community" },
   ];
   return (
     <header className="bg-white/85 backdrop-blur-md border-b border-slate-200/70 sticky top-0 z-50 shadow-sm">
@@ -1160,7 +1137,6 @@ function ConceptCard({ concept }) {
         className="w-full text-left p-5 flex items-start gap-4"
         onClick={() => setOpen(o => !o)}
       >
-        <span className="text-3xl flex-shrink-0">{concept.icon}</span>
         <div className="flex-1">
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-semibold text-slate-900 text-base">{concept.title}</h3>
@@ -1232,7 +1208,7 @@ function ConceptCard({ concept }) {
             <div className="space-y-3">
               {concept.methods.map((m, i) => (
                 <div key={i} className="border border-slate-200 rounded-xl p-3">
-                  <div className="font-semibold text-sm text-slate-900 mb-1">{m.icon} {m.name}</div>
+                  <div className="font-semibold text-sm text-slate-900 mb-1">{m.name}</div>
                   <div className="text-xs text-slate-600 space-y-1">
                     <div><span className="font-medium text-slate-700">When: </span>{m.when}</div>
                     <div><span className="font-medium text-slate-700">How: </span>{m.how}</div>
@@ -1248,7 +1224,7 @@ function ConceptCard({ concept }) {
             <div className="space-y-2">
               {concept.docs.map((d, i) => (
                 <div key={i} className="border border-slate-200 rounded-xl p-3">
-                  <div className="font-semibold text-sm text-slate-900 mb-1">📄 {d.name}</div>
+                  <div className="font-semibold text-sm text-slate-900 mb-1">{d.name}</div>
                   <p className="text-xs text-slate-600">{d.desc}</p>
                 </div>
               ))}
@@ -1401,7 +1377,6 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
       {/* Hero result card */}
       <Card className={`overflow-hidden`}>
         <div className={`${c.header} p-6 text-white`}>
-          <div className="text-5xl mb-2">{detail.icon}</div>
           <div className="text-sm font-medium opacity-80 mb-1">Your Recommended Methodology</div>
           <h2 className="text-3xl font-bold mb-1">{detail.name}</h2>
           <p className="opacity-90 text-sm">{detail.tagline}</p>
@@ -1440,7 +1415,7 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
 
       {/* Next steps */}
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-3">🚀 Your Next Steps</h3>
+        <h3 className="font-semibold text-slate-900 mb-3">Your Next Steps</h3>
         <ol className="space-y-3">
           {detail.nextSteps.map((step, i) => (
             <li key={i} className="flex items-start gap-3">
@@ -1453,13 +1428,8 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
 
       {/* Org structure suggestion */}
       <Card className="p-5 border-l-4 border-l-amber-400">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">🏗️</span>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Organizational Structure Suggestion</h3>
-            <p className="text-sm text-slate-600">{detail.orgSuggestion}</p>
-          </div>
-        </div>
+        <h3 className="font-semibold text-slate-900 mb-1">Organizational Structure Suggestion</h3>
+        <p className="text-sm text-slate-600">{detail.orgSuggestion}</p>
       </Card>
 
       {/* Choose a planning document */}
@@ -1518,7 +1488,7 @@ function CharterField({ field, value, onChange, tip, recommended }) {
             onClick={() => setShowExample(s => !s)}
             className="text-xs font-medium text-purple-600 hover:text-purple-800"
           >
-            💡 {showExample ? "Hide example" : "Not sure how to fill this out? See an example"}
+            {showExample ? "Hide example" : "Not sure how to fill this out? See an example"}
           </button>
           {showExample && (
             <div className="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg fade-in">
@@ -1557,7 +1527,6 @@ function CharterDocument({ data, detail }) {
           <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Project Charter</div>
           <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
           <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
-            <span>{detail.icon}</span>
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
@@ -1887,7 +1856,7 @@ function CharterHealthCheck({ data, recommended }) {
 
       {gaps.length > 0 && (
         <div>
-          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">⚠ Parts You Might Have Missed</div>
+          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Parts You Might Have Missed</div>
           <ul className="space-y-2">
             {gaps.map((g, i) => (
               <li key={i} className="text-sm bg-amber-50 rounded-lg p-2.5">
@@ -1901,7 +1870,7 @@ function CharterHealthCheck({ data, recommended }) {
 
       {gaps.length > 0 && (
         <div className="mt-5 pt-5 border-t border-slate-100">
-          <div className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1">🛡 What To Do — PACE Backup Plans</div>
+          <div className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1">What To Do — PACE Backup Plans</div>
           <p className="text-xs text-slate-500 mb-3">For each gap: Primary (best fix), Alternate (next best), Contingency (fallback), Emergency (last resort). Tap a gap to expand.</p>
           <div className="space-y-2">
             {gaps.map((g, i) => <PaceGapCard key={i} gap={g} />)}
@@ -1979,15 +1948,15 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
             ← Edit Charter
           </button>
           <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
-            ⬇ Download as .txt
+            Download as .txt
           </button>
           <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
-            🖨 Print / Save as PDF
+            Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">📧 Email Yourself This Charter</div>
+          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This Charter</div>
           <p className="text-xs text-slate-500 mb-3">We'll send the full charter straight to your inbox.</p>
           <div className="flex gap-2">
             <input
@@ -2018,7 +1987,7 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
             onClick={() => onBuildScopePlan(data.title)}
             className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
           >
-            📋 Build Your Scope Management Plan →
+            Build Your Scope Management Plan →
           </button>
         </div>
       </div>
@@ -2028,7 +1997,6 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <div className="text-4xl mb-2">📄</div>
         <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Project Charter</h2>
         <p className="text-slate-500 text-sm max-w-md mx-auto">
           A charter formally authorizes your project. Fill in each section below — tips are tailored to your recommended methodology, {detail.name}.
@@ -2086,7 +2054,6 @@ function ScopePlanDocument({ data, detail }) {
           <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Scope Management Plan</div>
           <h2 className="text-2xl font-bold text-slate-900">{data.projectTitle || "Untitled Project"}</h2>
           <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
-            <span>{detail.icon}</span>
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
@@ -2177,15 +2144,15 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
             ← Edit Plan
           </button>
           <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
-            ⬇ Download as .txt
+            Download as .txt
           </button>
           <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
-            🖨 Print / Save as PDF
+            Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">📧 Email Yourself This Scope Plan</div>
+          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This Scope Plan</div>
           <p className="text-xs text-slate-500 mb-3">We'll send the full scope plan straight to your inbox.</p>
           <div className="flex gap-2">
             <input
@@ -2217,7 +2184,7 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
               onClick={() => onNext(data.projectTitle)}
               className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
             >
-              👥 Build Your Resource Management Plan →
+              Build Your Resource Management Plan →
             </button>
           </div>
         )}
@@ -2228,7 +2195,6 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <div className="text-4xl mb-2">📋</div>
         <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Scope Management Plan</h2>
         <p className="text-slate-500 text-sm max-w-md mx-auto">
           A scope management plan defines how you'll set, document, and protect your project's boundaries.
@@ -2309,7 +2275,6 @@ function PlanDocument({ planType, data, detail }) {
           <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">{planType.docLabel}</div>
           <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
           <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
-            <span>{detail.icon}</span>
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
@@ -2395,15 +2360,15 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
             ← Edit Plan
           </button>
           <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
-            ⬇ Download as .txt
+            Download as .txt
           </button>
           <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
-            🖨 Print / Save as PDF
+            Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">📧 Email Yourself This {planType.docLabel}</div>
+          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This {planType.docLabel}</div>
           <p className="text-xs text-slate-500 mb-3">We'll send the full plan straight to your inbox.</p>
           <div className="flex gap-2">
             <input
@@ -2446,7 +2411,6 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <div className="text-4xl mb-2">{planType.icon}</div>
         <h2 className="text-2xl font-bold text-slate-900 mb-1">{planType.formTitle}</h2>
         <p className="text-slate-500 text-sm max-w-md mx-auto">{planType.formIntro}</p>
       </div>
@@ -2500,7 +2464,6 @@ function DocumentHub({ onSelect, onBack, compact }) {
   return (
     <div className="fade-in">
       <div className="text-center mb-5">
-        {!compact && <div className="text-5xl mb-3">🗂️</div>}
         <h2 className={compact ? "text-lg font-bold text-slate-900 mb-1" : "text-3xl font-bold text-slate-900 mb-2"}>
           {compact ? "Choose a Document to Build" : "Choose a Document to Build"}
         </h2>
@@ -2517,7 +2480,7 @@ function DocumentHub({ onSelect, onBack, compact }) {
           className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700 mb-2"
         >
           {DOCUMENT_HUB_ITEMS.map(item => (
-            <option key={item.key} value={item.key}>{item.icon} {item.label}</option>
+            <option key={item.key} value={item.key}>{item.label}</option>
           ))}
         </select>
         {selectedItem && <p className="text-xs text-slate-500 mb-4">{selectedItem.desc}</p>}
@@ -2642,7 +2605,7 @@ function AssessSection() {
           projectTitle={scopeTitle}
           onBack={() => setStep("hub")}
           onNext={nextPlanType ? (title) => { setScopeTitle(title); setStep(nextPlanType.key); } : null}
-          nextLabel={nextPlanType ? `${nextPlanType.icon} Build Your ${nextPlanType.docLabel}` : null}
+          nextLabel={nextPlanType ? `Build Your ${nextPlanType.docLabel}` : null}
         />
       </div>
     );
@@ -2660,12 +2623,11 @@ function AssessSection() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {[
-            { icon: "💧", name: "Waterfall", desc: "Sequential, plan-driven" },
-            { icon: "🔁", name: "Agile", desc: "Iterative, flexible" },
-            { icon: "🔀", name: "Hybrid", desc: "Best of both" },
+            { name: "Waterfall", desc: "Sequential, plan-driven" },
+            { name: "Agile", desc: "Iterative, flexible" },
+            { name: "Hybrid", desc: "Best of both" },
           ].map(m => (
             <Card key={m.name} className="p-4 text-center">
-              <div className="text-3xl mb-1">{m.icon}</div>
               <div className="font-semibold text-slate-900 text-sm">{m.name}</div>
               <div className="text-xs text-slate-500">{m.desc}</div>
             </Card>
@@ -2706,9 +2668,9 @@ function AssessSection() {
    ============================================================ */
 
 const JOIN_REASONS = [
-  { key: "personal", icon: "🙋", label: "Help with my own personal projects", desc: "Get feedback, examples, and input on something you're currently planning." },
-  { key: "experience", icon: "📈", label: "Get experience managing other projects", desc: "Contribute to other people's plans and build real project management experience." },
-  { key: "community", icon: "🌱", label: "Just want to be part of a progressive community", desc: "Connect with other PMs, browse ideas, and stay engaged." },
+  { key: "personal", label: "Help with my own personal projects", desc: "Get feedback, examples, and input on something you're currently planning." },
+  { key: "experience", label: "Get experience managing other projects", desc: "Contribute to other people's plans and build real project management experience." },
+  { key: "community", label: "Just want to be part of a progressive community", desc: "Connect with other PMs, browse ideas, and stay engaged." },
 ];
 
 const JOIN_REASON_MESSAGES = {
@@ -2756,16 +2718,16 @@ function CommunitySection() {
   };
 
   const coreIdeas = [
-    { icon: "🤝", title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
-    { icon: "🗂️", title: "Browse Project Examples", desc: "See how other users structured their charter, scope, or schedule for similar project types or industries — real-world reference, not static templates." },
-    { icon: "💬", title: "Discussion & Q&A", desc: "Ask about a specific planning challenge — like how to estimate a task — and get input from others who've faced it." },
-    { icon: "🔀", title: "Methodology-Based Groups", desc: "Filter by Waterfall, Agile, or Hybrid — since planning questions and challenges differ by approach." },
+    { title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
+    { title: "Browse Project Examples", desc: "See how other users structured their charter, scope, or schedule for similar project types or industries — real-world reference, not static templates." },
+    { title: "Discussion & Q&A", desc: "Ask about a specific planning challenge — like how to estimate a task — and get input from others who've faced it." },
+    { title: "Methodology-Based Groups", desc: "Filter by Waterfall, Agile, or Hybrid — since planning questions and challenges differ by approach." },
   ];
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <div className="text-6xl mb-4">🌐</div>
+        <CompassLogo className="w-14 h-14 mx-auto mb-4" />
         <h1 className="text-3xl font-bold text-slate-900 mb-3">PM Compass Community</h1>
         <p className="text-slate-500 text-lg max-w-lg mx-auto">
           Assess and Learn help you plan your own project. Community connects you to people doing the same thing — so you can get input, share progress, and see how similar projects were planned by others.
@@ -2776,7 +2738,6 @@ function CommunitySection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {coreIdeas.map((idea, i) => (
             <Card key={i} className="p-5">
-              <div className="text-3xl mb-2">{idea.icon}</div>
               <h3 className="font-semibold text-slate-900 text-sm mb-1">{idea.title}</h3>
               <p className="text-xs text-slate-500 leading-relaxed">{idea.desc}</p>
             </Card>
@@ -2811,12 +2772,9 @@ function CommunitySection() {
                     : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl flex-shrink-0">{r.icon}</span>
-                  <div>
-                    <div className={`text-sm font-semibold ${reason === r.key ? "text-blue-900" : "text-slate-800"}`}>{r.label}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{r.desc}</div>
-                  </div>
+                <div>
+                  <div className={`text-sm font-semibold ${reason === r.key ? "text-blue-900" : "text-slate-800"}`}>{r.label}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{r.desc}</div>
                 </div>
               </button>
             ))}
@@ -2978,8 +2936,7 @@ function CommunitySection() {
 
       {step === "joined" && (
         <div className="text-center fade-in">
-          <div className="text-4xl mb-2">🎉</div>
-          <p className="text-slate-700 font-semibold">You're in{profile.name.trim() ? `, ${profile.name.trim()}` : ""}!</p>
+          <p className="text-slate-700 font-semibold text-lg">You're in{profile.name.trim() ? `, ${profile.name.trim()}` : ""}!</p>
           <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">{JOIN_REASON_MESSAGES[reason]}</p>
           {hasProjects === "yes" && projectDetails.trim() && (
             <p className="text-slate-400 text-xs mt-2 max-w-sm mx-auto">Noted — we'll keep "{projectDetails.trim()}" in mind when surfacing relevant examples and discussions.</p>
