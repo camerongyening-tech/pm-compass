@@ -1055,6 +1055,18 @@ const DOCUMENT_HUB_ITEMS = [
    COMPONENTS — Shared UI
    ============================================================ */
 
+function CompassLogo({ className = "w-6 h-6", colorClass = "text-blue-600" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${className} ${colorClass}`}>
+      <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.4" opacity="0.15" />
+      <path d="M15.6 8.4L13 13L8.4 15.6L11 11L15.6 8.4Z" fill="currentColor" />
+      <path d="M15.6 8.4L13 13L11 11L15.6 8.4Z" fill="currentColor" opacity="0.45" />
+      <circle cx="12" cy="12" r="1.1" fill="white" stroke="currentColor" strokeWidth="1" />
+    </svg>
+  );
+}
+
 function Badge({ color, children }) {
   const colorMap = {
     blue: "bg-blue-100 text-blue-800",
@@ -1098,7 +1110,7 @@ function Nav({ activeTab, setActiveTab }) {
     <header className="bg-white/85 backdrop-blur-md border-b border-slate-200/70 sticky top-0 z-50 shadow-sm">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🧭</span>
+          <CompassLogo className="w-6 h-6" />
           <span className="font-bold text-slate-900 text-lg tracking-tight">PM Compass</span>
         </div>
         <nav className="flex gap-1">
@@ -2640,7 +2652,7 @@ function AssessSection() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🧭</div>
+          <CompassLogo className="w-16 h-16 mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-slate-900 mb-3">Find Your Method</h1>
           <p className="text-slate-500 text-lg max-w-md mx-auto">
             Answer 7 quick questions about your company and projects. We'll recommend the best project management methodology — and explain why.
