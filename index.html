@@ -2966,27 +2966,39 @@ function HomeActionRow({ n, label, sub, onClick }) {
   );
 }
 
-function HomeAnnotatedPanel() {
+function HomeAboutPanel() {
+  const stats = [
+    { n: "01", label: "No PM background required" },
+    { n: "02", label: "Waterfall, Agile & Hybrid supported" },
+    { n: "03", label: "9 planning documents generated" },
+  ];
+
   return (
-    <div className="border border-dashed border-bp-hair rounded-lg p-6 bp-fade-3">
-      <div className="font-mono text-[11px] text-bp-muted mb-6">04 · auto-syncs on dependency change</div>
-      <svg viewBox="0 0 400 110" className="w-full h-auto">
-        <line x1="92" y1="35" x2="163" y2="35" stroke="#2A2F38" strokeWidth="1" />
-        <line x1="237" y1="35" x2="308" y2="35" stroke="#2A2F38" strokeWidth="1" />
-        <rect x="20" y="10" width="72" height="50" rx="3" fill="none" stroke="#8B92A0" strokeWidth="1.2" />
-        <rect x="164" y="10" width="72" height="50" rx="3" fill="none" stroke="#E8A33D" strokeWidth="1.4" />
-        <rect x="308" y="10" width="72" height="50" rx="3" fill="none" stroke="#8B92A0" strokeWidth="1.2" />
-        <text x="56" y="40" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="10" fill="#8B92A0">task</text>
-        <text x="200" y="40" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="10" fill="#E8A33D">active</text>
-        <text x="344" y="40" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="10" fill="#8B92A0">blocked</text>
-      </svg>
-      <div className="flex justify-between font-mono text-[11px] text-bp-muted mt-5">
-        <span>01 task</span>
-        <span className="text-bp-amber">02 active</span>
-        <span>03 blocked</span>
+    <div className="border border-dashed border-bp-hair rounded-lg p-6 md:p-8 bp-fade-3">
+      <div className="font-mono text-[11px] text-bp-muted mb-6">04 · about</div>
+
+      <h2 className="font-display font-semibold text-2xl text-bp-text tracking-tight mb-3">
+        Built for people who were never handed a PM playbook.
+      </h2>
+      <p className="font-plex text-bp-muted text-sm leading-relaxed mb-6">
+        Freelancers taking on a client engagement. Small business owners launching something new.
+        First-time managers handed a project with no framework to lean on. PM Compass walks through
+        the same structured thinking a trained project manager would use — Waterfall, Agile, or Hybrid —
+        without requiring the training, and turns it into the real documents a project needs to start
+        on solid ground.
+      </p>
+
+      <div className="border-t border-bp-hair pt-5 space-y-3">
+        {stats.map(s => (
+          <div key={s.n} className="flex items-baseline gap-3">
+            <span className="font-mono text-xs text-bp-amber flex-shrink-0">{s.n}</span>
+            <span className="font-plex text-sm text-bp-text">{s.label}</span>
+          </div>
+        ))}
       </div>
+
       <div className="mt-6 pt-4 border-t border-bp-hair flex justify-between font-mono text-[10px] text-bp-muted">
-        <span>N 51.5° · scale 1:4</span>
+        <span>built for freelancers · small teams</span>
         <span>rev 03</span>
       </div>
     </div>
@@ -3020,7 +3032,7 @@ function HomeSection({ onNavigate }) {
             </div>
 
             <div className="md:col-span-3">
-              <HomeAnnotatedPanel />
+              <HomeAboutPanel />
             </div>
           </div>
         </div>
