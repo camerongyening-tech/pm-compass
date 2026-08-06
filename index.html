@@ -14,7 +14,7 @@
         extend: {
           colors: {
             brand: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
-            bp: { bg:'#14171C', surface:'#1C2027', hair:'#2A2F38', text:'#E8EAED', muted:'#8B92A0', amber:'#E8A33D' },
+            bp: { bg:'#14171C', surface:'#1C2027', surface2:'#20242C', hair:'#2A2F38', text:'#E8EAED', muted:'#8B92A0', amber:'#E8A33D' },
           },
           fontFamily: {
             display: ['"Space Grotesk"', 'sans-serif'],
@@ -34,10 +34,11 @@
   </script>
   <style>
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #eaf2fe;
+      font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+      background: #14171C;
       min-height: 100vh;
     }
+    ::selection { background: #E8A33D; color: #14171C; }
     .fade-in { animation: fadeIn 0.4s ease-in; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
     .progress-bar { transition: width 0.6s ease; }
@@ -60,15 +61,24 @@
       .fade-in, .bp-grid, .bp-fade-1, .bp-fade-2, .bp-fade-3 { animation: none !important; opacity: 1 !important; transform: none !important; }
     }
     @media print {
+      body { background: #fff !important; }
       body * { visibility: hidden; }
       #charter-print-area, #charter-print-area *,
       #scope-print-area, #scope-print-area *,
       #plan-print-area, #plan-print-area * { visibility: visible; }
       #charter-print-area, #scope-print-area, #plan-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      #charter-print-area, #charter-print-area *,
+      #scope-print-area, #scope-print-area *,
+      #plan-print-area, #plan-print-area * {
+        background: #fff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+      }
     }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen">
+<body class="text-bp-text min-h-screen">
 <div id="root"></div>
 
 <script type="text/babel">
@@ -125,10 +135,10 @@ const PM_CONCEPTS = [
     color: "green",
     summary: "Projects move through four phases: Initiation → Planning → Execution → Closing.",
     phases: [
-      { name: "Initiation", color: "bg-blue-100 text-blue-800", activities: ["Define the project goal", "Identify stakeholders", "Assess feasibility", "Create the Project Charter"] },
-      { name: "Planning", color: "bg-violet-100 text-violet-800", activities: ["Define scope in detail", "Build the schedule (WBS, Gantt)", "Estimate budget", "Plan for risks and communications"] },
-      { name: "Execution", color: "bg-green-100 text-green-800", activities: ["Direct and manage project work", "Develop and lead the team", "Manage stakeholder expectations", "Implement quality assurance"] },
-      { name: "Closing", color: "bg-amber-100 text-amber-800", activities: ["Obtain formal acceptance", "Release resources", "Document lessons learned", "Archive project records"] },
+      { name: "Initiation", color: "bg-blue-500/15 text-blue-400", activities: ["Define the project goal", "Identify stakeholders", "Assess feasibility", "Create the Project Charter"] },
+      { name: "Planning", color: "bg-violet-500/15 text-violet-400", activities: ["Define scope in detail", "Build the schedule (WBS, Gantt)", "Estimate budget", "Plan for risks and communications"] },
+      { name: "Execution", color: "bg-green-500/15 text-green-400", activities: ["Direct and manage project work", "Develop and lead the team", "Manage stakeholder expectations", "Implement quality assurance"] },
+      { name: "Closing", color: "bg-amber-500/15 text-amber-400", activities: ["Obtain formal acceptance", "Release resources", "Document lessons learned", "Archive project records"] },
     ],
   },
   {
@@ -1028,7 +1038,7 @@ const DOCUMENT_HUB_ITEMS = [
    COMPONENTS — Shared UI
    ============================================================ */
 
-function CompassLogo({ className = "w-6 h-6", colorClass = "text-blue-600" }) {
+function CompassLogo({ className = "w-6 h-6", colorClass = "text-bp-amber" }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${className} ${colorClass}`}>
       <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.4" />
@@ -1042,20 +1052,20 @@ function CompassLogo({ className = "w-6 h-6", colorClass = "text-blue-600" }) {
 
 function Badge({ color, children }) {
   const colorMap = {
-    blue: "bg-blue-100 text-blue-800",
-    green: "bg-green-100 text-green-800",
-    purple: "bg-purple-100 text-purple-800",
-    amber: "bg-amber-100 text-amber-800",
-    red: "bg-red-100 text-red-800",
-    violet: "bg-violet-100 text-violet-800",
-    pink: "bg-pink-100 text-pink-800",
-    cyan: "bg-cyan-100 text-cyan-800",
-    indigo: "bg-indigo-100 text-indigo-800",
-    teal: "bg-teal-100 text-teal-800",
-    orange: "bg-orange-100 text-orange-800",
+    blue: "bg-blue-500/15 text-blue-400",
+    green: "bg-green-500/15 text-green-400",
+    purple: "bg-purple-500/15 text-purple-400",
+    amber: "bg-amber-500/15 text-amber-400",
+    red: "bg-red-500/15 text-red-400",
+    violet: "bg-violet-500/15 text-violet-400",
+    pink: "bg-pink-500/15 text-pink-400",
+    cyan: "bg-cyan-500/15 text-cyan-400",
+    indigo: "bg-indigo-500/15 text-indigo-400",
+    teal: "bg-teal-500/15 text-teal-400",
+    orange: "bg-orange-500/15 text-orange-400",
   };
   return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${colorMap[color] || "bg-slate-100 text-slate-700"}`}>
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${colorMap[color] || "bg-bp-surface2 text-bp-text"}`}>
       {children}
     </span>
   );
@@ -1063,7 +1073,7 @@ function Badge({ color, children }) {
 
 function Card({ children, className = "" }) {
   return (
-    <div className={`bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-slate-100 ${className}`}>
+    <div className={`bg-bp-surface rounded-lg shadow-md shadow-black/30 border border-bp-hair ${className}`}>
       {children}
     </div>
   );
@@ -1075,65 +1085,35 @@ function Card({ children, className = "" }) {
 
 function Nav({ activeTab, setActiveTab }) {
   const tabs = [
-    { id: "home", label: "Home", short: "Home" },
-    { id: "learn", label: "Learn PM", short: "Learn" },
-    { id: "assess", label: "Find Your Method", short: "Assess" },
-    { id: "community", label: "Community", short: "Community" },
+    { id: "learn", label: "Learn PM" },
+    { id: "assess", label: "Find Your Method" },
+    { id: "community", label: "Community" },
   ];
 
-  if (activeTab === "home") {
-    return (
-      <header className="bg-bp-bg border-b border-bp-hair sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-          <button onClick={() => setActiveTab("home")} className="flex items-center gap-2">
-            <CompassLogo className="w-6 h-6" colorClass="text-bp-amber" />
-            <span className="font-display font-semibold text-bp-text text-base tracking-tight uppercase">PM Compass</span>
-          </button>
-          <nav className="hidden sm:flex items-center gap-7">
-            {tabs.filter(t => t.id !== "home").map(t => (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                className="text-sm font-plex text-bp-muted hover:text-bp-text transition-colors"
-              >
-                {t.label}
-              </button>
-            ))}
-          </nav>
-          <button
-            onClick={() => setActiveTab("assess")}
-            className="bg-bp-amber text-bp-bg px-4 py-2 rounded text-sm font-semibold font-plex hover:brightness-110 transition-all"
-          >
-            Start Free
-          </button>
-        </div>
-      </header>
-    );
-  }
-
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
-        <div className="flex items-center gap-2">
-          <CompassLogo className="w-6 h-6" />
-          <span className="font-bold text-slate-900 text-lg tracking-tight">PM Compass</span>
-        </div>
-        <nav className="flex gap-1">
+    <header className="bg-bp-bg border-b border-bp-hair sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+        <button onClick={() => setActiveTab("home")} className="flex items-center gap-2 flex-shrink-0">
+          <CompassLogo className="w-6 h-6" colorClass="text-bp-amber" />
+          <span className="font-display font-semibold text-bp-text text-base tracking-tight uppercase">PM Compass</span>
+        </button>
+        <nav className="hidden sm:flex items-center gap-7">
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === t.id
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
+              className={`text-sm font-plex transition-colors ${activeTab === t.id ? "text-bp-amber" : "text-bp-muted hover:text-bp-text"}`}
             >
-              <span className="hidden sm:inline">{t.label}</span>
-              <span className="sm:hidden">{t.short}</span>
+              {t.label}
             </button>
           ))}
         </nav>
+        <button
+          onClick={() => setActiveTab("assess")}
+          className="bg-bp-amber text-bp-bg px-4 py-2 rounded text-sm font-semibold font-plex hover:brightness-110 transition-all flex-shrink-0"
+        >
+          Start Free
+        </button>
       </div>
     </header>
   );
@@ -1160,27 +1140,27 @@ function ConceptCard({ concept }) {
   };
 
   return (
-    <Card className={`border-l-4 ${colorBorderMap[concept.color] || "border-l-slate-400"}`}>
+    <Card className={`border-l-4 ${colorBorderMap[concept.color] || "border-l-bp-hair"}`}>
       <button
         className="w-full text-left p-5 flex items-start gap-4"
         onClick={() => setOpen(o => !o)}
       >
         <div className="flex-1">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-semibold text-slate-900 text-base">{concept.title}</h3>
-            <span className={`text-slate-400 text-lg transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+            <h3 className="font-semibold text-bp-text text-base">{concept.title}</h3>
+            <span className={`text-bp-muted text-lg transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
           </div>
-          <p className="text-slate-600 text-sm mt-1">{concept.summary}</p>
+          <p className="text-bp-muted text-sm mt-1">{concept.summary}</p>
         </div>
       </button>
 
       {open && (
-        <div className="px-5 pb-5 border-t border-slate-100 pt-4 fade-in">
+        <div className="px-5 pb-5 border-t border-bp-hair pt-4 fade-in">
           {/* Bullets */}
           {concept.bullets && (
             <ul className="space-y-2 mb-4">
               {concept.bullets.map((b, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <li key={i} className="flex items-start gap-2 text-sm text-bp-text">
                   <span className="text-blue-500 mt-0.5">•</span>
                   <span>{b}</span>
                 </li>
@@ -1190,7 +1170,7 @@ function ConceptCard({ concept }) {
 
           {/* Detail paragraph */}
           {concept.detail && (
-            <p className="text-sm text-slate-600 bg-slate-50 rounded-xl p-3 leading-relaxed">{concept.detail}</p>
+            <p className="text-sm text-bp-muted bg-bp-surface2 rounded-xl p-3 leading-relaxed">{concept.detail}</p>
           )}
 
           {/* Lifecycle phases */}
@@ -1213,17 +1193,17 @@ function ConceptCard({ concept }) {
           {concept.orgs && (
             <div className="space-y-3">
               {concept.orgs.map((org, i) => (
-                <div key={i} className="border border-slate-200 rounded-xl p-3">
-                  <div className="font-semibold text-sm text-slate-900 mb-1">{org.name}</div>
-                  <p className="text-xs text-slate-600 mb-2">{org.desc}</p>
+                <div key={i} className="border border-bp-hair rounded-xl p-3">
+                  <div className="font-semibold text-sm text-bp-text mb-1">{org.name}</div>
+                  <p className="text-xs text-bp-muted mb-2">{org.desc}</p>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <div className="text-xs font-medium text-green-700 mb-1">✓ Pros</div>
-                      {org.pros.map((p, j) => <div key={j} className="text-xs text-slate-600">• {p}</div>)}
+                      <div className="text-xs font-medium text-green-400 mb-1">✓ Pros</div>
+                      {org.pros.map((p, j) => <div key={j} className="text-xs text-bp-muted">• {p}</div>)}
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-red-600 mb-1">✗ Cons</div>
-                      {org.cons.map((c, j) => <div key={j} className="text-xs text-slate-600">• {c}</div>)}
+                      <div className="text-xs font-medium text-red-400 mb-1">✗ Cons</div>
+                      {org.cons.map((c, j) => <div key={j} className="text-xs text-bp-muted">• {c}</div>)}
                     </div>
                   </div>
                 </div>
@@ -1235,12 +1215,12 @@ function ConceptCard({ concept }) {
           {concept.methods && (
             <div className="space-y-3">
               {concept.methods.map((m, i) => (
-                <div key={i} className="border border-slate-200 rounded-xl p-3">
-                  <div className="font-semibold text-sm text-slate-900 mb-1">{m.name}</div>
-                  <div className="text-xs text-slate-600 space-y-1">
-                    <div><span className="font-medium text-slate-700">When: </span>{m.when}</div>
-                    <div><span className="font-medium text-slate-700">How: </span>{m.how}</div>
-                    <div><span className="font-medium text-slate-700">Examples: </span>{m.examples}</div>
+                <div key={i} className="border border-bp-hair rounded-xl p-3">
+                  <div className="font-semibold text-sm text-bp-text mb-1">{m.name}</div>
+                  <div className="text-xs text-bp-muted space-y-1">
+                    <div><span className="font-medium text-bp-text">When: </span>{m.when}</div>
+                    <div><span className="font-medium text-bp-text">How: </span>{m.how}</div>
+                    <div><span className="font-medium text-bp-text">Examples: </span>{m.examples}</div>
                   </div>
                 </div>
               ))}
@@ -1251,9 +1231,9 @@ function ConceptCard({ concept }) {
           {concept.docs && (
             <div className="space-y-2">
               {concept.docs.map((d, i) => (
-                <div key={i} className="border border-slate-200 rounded-xl p-3">
-                  <div className="font-semibold text-sm text-slate-900 mb-1">{d.name}</div>
-                  <p className="text-xs text-slate-600">{d.desc}</p>
+                <div key={i} className="border border-bp-hair rounded-xl p-3">
+                  <div className="font-semibold text-sm text-bp-text mb-1">{d.name}</div>
+                  <p className="text-xs text-bp-muted">{d.desc}</p>
                 </div>
               ))}
             </div>
@@ -1268,16 +1248,16 @@ function LearnSection() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-2 tracking-tight leading-[1.05]">Project Management Fundamentals</h1>
-        <p className="text-slate-500 text-lg">Tap any card to expand and dive deeper into each topic.</p>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-bp-text mb-2 tracking-tight leading-[1.05]">Project Management Fundamentals</h1>
+        <p className="text-bp-muted text-lg">Tap any card to expand and dive deeper into each topic.</p>
       </div>
       <div className="space-y-3">
         {PM_CONCEPTS.map(c => <ConceptCard key={c.id} concept={c} />)}
       </div>
       <div className="mt-10 text-center">
-        <p className="text-slate-500 text-sm mb-3">Ready to find the right methodology for your team?</p>
+        <p className="text-bp-muted text-sm mb-3">Ready to find the right methodology for your team?</p>
         <button
-          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+          className="bg-bp-amber text-bp-bg px-6 py-3 rounded-xl font-semibold hover:brightness-110 transition-colors shadow-sm"
           onClick={() => document.querySelector('[data-tab="assess"]')?.click()}
         >
           Take the Assessment →
@@ -1295,13 +1275,13 @@ function ProgressBar({ current, total }) {
   const pct = Math.round((current / total) * 100);
   return (
     <div className="mb-6">
-      <div className="flex justify-between text-xs text-slate-500 mb-1">
+      <div className="flex justify-between text-xs text-bp-muted mb-1">
         <span>Question {current} of {total}</span>
         <span>{pct}% complete</span>
       </div>
-      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+      <div className="h-2 bg-bp-hair rounded-full overflow-hidden">
         <div
-          className="h-full bg-blue-600 rounded-full progress-bar"
+          className="h-full bg-bp-amber rounded-full progress-bar"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -1317,8 +1297,8 @@ function AssessmentStep({ question, answer, onAnswer, onBack, onNext, stepIdx, t
         <div className="mb-1">
           <Badge color="blue">Question {stepIdx + 1}</Badge>
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mt-2 mb-1">{question.text}</h2>
-        <p className="text-slate-500 text-sm mb-6">{question.subtitle}</p>
+        <h2 className="text-xl font-bold text-bp-text mt-2 mb-1">{question.text}</h2>
+        <p className="text-bp-muted text-sm mb-6">{question.subtitle}</p>
         <div className="space-y-3">
           {question.options.map((opt, i) => (
             <button
@@ -1326,12 +1306,12 @@ function AssessmentStep({ question, answer, onAnswer, onBack, onNext, stepIdx, t
               onClick={() => onAnswer(i)}
               className={`w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium ${
                 answer === i
-                  ? "border-blue-500 bg-blue-50 text-blue-900"
-                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+                  ? "border-bp-amber bg-bp-amber/10 text-bp-amber"
+                  : "border-bp-hair hover:border-bp-hair hover:bg-bp-surface2 text-bp-text"
               }`}
             >
               <span className={`inline-block w-6 h-6 rounded-full border-2 mr-3 text-center text-xs leading-5 flex-shrink-0 ${
-                answer === i ? "border-blue-500 bg-blue-500 text-white" : "border-slate-300"
+                answer === i ? "border-bp-amber bg-bp-amber text-bp-bg" : "border-bp-hair"
               }`} style={{display:"inline-flex",alignItems:"center",justifyContent:"center"}}>
                 {answer === i ? "✓" : String.fromCharCode(65 + i)}
               </span>
@@ -1344,14 +1324,14 @@ function AssessmentStep({ question, answer, onAnswer, onBack, onNext, stepIdx, t
         <button
           onClick={onBack}
           disabled={stepIdx === 0}
-          className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text disabled:opacity-30 disabled:cursor-not-allowed"
         >
           ← Back
         </button>
         <button
           onClick={onNext}
           disabled={answer === undefined}
-          className="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {stepIdx === total - 1 ? "See My Results →" : "Next →"}
         </button>
@@ -1366,22 +1346,22 @@ function AssessmentStep({ question, answer, onAnswer, onBack, onNext, stepIdx, t
 
 function ScoreBar({ label, pct, color, isTop }) {
   const colorMap = {
-    blue: { bar: "bg-blue-500", text: "text-blue-700" },
-    green: { bar: "bg-green-500", text: "text-green-700" },
-    purple: { bar: "bg-purple-500", text: "text-purple-700" },
+    blue: { bar: "bg-blue-500", text: "text-blue-400" },
+    green: { bar: "bg-green-500", text: "text-green-400" },
+    purple: { bar: "bg-purple-500", text: "text-purple-400" },
   };
   const c = colorMap[color] || colorMap.blue;
   return (
     <div className="mb-3">
       <div className="flex justify-between items-center mb-1">
-        <span className={`text-sm font-medium ${isTop ? c.text : "text-slate-600"}`}>
+        <span className={`text-sm font-medium ${isTop ? c.text : "text-bp-muted"}`}>
           {isTop ? "★ " : ""}{label}
         </span>
-        <span className={`text-sm font-bold ${isTop ? c.text : "text-slate-500"}`}>{pct}%</span>
+        <span className={`text-sm font-bold ${isTop ? c.text : "text-bp-muted"}`}>{pct}%</span>
       </div>
-      <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-3 bg-bp-surface2 rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full progress-bar ${isTop ? c.bar : "bg-slate-300"}`}
+          className={`h-full rounded-full progress-bar ${isTop ? c.bar : "bg-bp-hair"}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -1392,9 +1372,9 @@ function ScoreBar({ label, pct, color, isTop }) {
 function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocument }) {
   const detail = METHODOLOGY_DETAILS[recommended];
   const colorMap = {
-    blue: { header: "bg-blue-600", badge: "bg-blue-100 text-blue-800", ring: "ring-blue-300" },
-    green: { header: "bg-green-600", badge: "bg-green-100 text-green-800", ring: "ring-green-300" },
-    purple: { header: "bg-purple-600", badge: "bg-purple-100 text-purple-800", ring: "ring-purple-300" },
+    blue: { header: "bg-bp-amber", badge: "bg-blue-500/15 text-blue-400", ring: "ring-blue-300" },
+    green: { header: "bg-green-600", badge: "bg-green-500/15 text-green-400", ring: "ring-green-300" },
+    purple: { header: "bg-purple-600", badge: "bg-purple-500/15 text-purple-400", ring: "ring-purple-300" },
   };
   const c = colorMap[detail.color] || colorMap.blue;
 
@@ -1410,15 +1390,15 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
           <p className="opacity-90 text-sm">{detail.tagline}</p>
         </div>
         <div className="p-6">
-          <h3 className="font-semibold text-slate-900 mb-2">Why this fits you</h3>
-          <p className="text-slate-600 text-sm leading-relaxed">{detail.why}</p>
+          <h3 className="font-semibold text-bp-text mb-2">Why this fits you</h3>
+          <p className="text-bp-muted text-sm leading-relaxed">{detail.why}</p>
         </div>
       </Card>
 
       {/* Confidence breakdown */}
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-1">Confidence Breakdown</h3>
-        <p className="text-xs text-slate-500 mb-4">Based on your 7 answers — scores reflect how well each methodology matches your context.</p>
+        <h3 className="font-semibold text-bp-text mb-1">Confidence Breakdown</h3>
+        <p className="text-xs text-bp-muted mb-4">Based on your 7 answers — scores reflect how well each methodology matches your context.</p>
         <ScoreBar label="Waterfall" pct={scores.waterfall} color="blue" isTop={recommended === "waterfall"} />
         <ScoreBar label="Agile" pct={scores.agile} color="green" isTop={recommended === "agile"} />
         <ScoreBar label="Hybrid" pct={scores.hybrid} color="purple" isTop={recommended === "hybrid"} />
@@ -1426,29 +1406,29 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
 
       {/* Key characteristics */}
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-3">Key Characteristics</h3>
+        <h3 className="font-semibold text-bp-text mb-3">Key Characteristics</h3>
         <ul className="space-y-2">
           {detail.characteristics.map((ch, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+            <li key={i} className="flex items-start gap-2 text-sm text-bp-text">
               <span className="text-blue-500 mt-0.5 flex-shrink-0">✓</span>
               <span>{ch}</span>
             </li>
           ))}
         </ul>
-        <div className="mt-4 p-3 bg-slate-50 rounded-xl">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Best For</div>
-          <p className="text-sm text-slate-700">{detail.bestFor}</p>
+        <div className="mt-4 p-3 bg-bp-surface2 rounded-xl">
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Best For</div>
+          <p className="text-sm text-bp-text">{detail.bestFor}</p>
         </div>
       </Card>
 
       {/* Next steps */}
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-3">Your Next Steps</h3>
+        <h3 className="font-semibold text-bp-text mb-3">Your Next Steps</h3>
         <ol className="space-y-3">
           {detail.nextSteps.map((step, i) => (
             <li key={i} className="flex items-start gap-3">
               <span className={`flex-shrink-0 w-6 h-6 rounded-full ${c.header} text-white text-xs font-bold flex items-center justify-center`}>{i + 1}</span>
-              <p className="text-sm text-slate-700 leading-relaxed">{step}</p>
+              <p className="text-sm text-bp-text leading-relaxed">{step}</p>
             </li>
           ))}
         </ol>
@@ -1456,8 +1436,8 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
 
       {/* Org structure suggestion */}
       <Card className="p-5 border-l-4 border-l-amber-400">
-        <h3 className="font-semibold text-slate-900 mb-1">Organizational Structure Suggestion</h3>
-        <p className="text-sm text-slate-600">{detail.orgSuggestion}</p>
+        <h3 className="font-semibold text-bp-text mb-1">Organizational Structure Suggestion</h3>
+        <p className="text-sm text-bp-muted">{detail.orgSuggestion}</p>
       </Card>
 
       {/* Choose a planning document */}
@@ -1469,7 +1449,7 @@ function ResultsScreen({ scores, recommended, answers, onRetake, onSelectDocumen
       <div className="text-center pt-2 pb-8">
         <button
           onClick={onRetake}
-          className="px-6 py-3 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm"
+          className="px-6 py-3 border-2 border-bp-hair rounded-xl text-bp-text font-semibold hover:border-bp-muted hover:bg-bp-surface2 transition-colors text-sm"
         >
           ↺ Retake Assessment
         </button>
@@ -1488,17 +1468,17 @@ function CharterField({ field, value, onChange, tip, recommended }) {
 
   return (
     <div className="mb-5">
-      <label className="block text-sm font-semibold text-slate-900 mb-1">
-        {field.label}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+      <label className="block text-sm font-semibold text-bp-text mb-1">
+        {field.label}{field.required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
-      {tip && <p className="text-xs text-blue-600 bg-blue-50 rounded-lg px-2 py-1 mb-2">{tip}</p>}
+      {tip && <p className="text-xs text-bp-amber bg-bp-amber/10 rounded-lg px-2 py-1 mb-2">{tip}</p>}
       {field.type === "textarea" ? (
         <textarea
           value={value}
           onChange={e => onChange(field.key, e.target.value)}
           placeholder={field.placeholder}
           rows={3}
-          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+          className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
         />
       ) : (
         <input
@@ -1506,7 +1486,7 @@ function CharterField({ field, value, onChange, tip, recommended }) {
           value={value}
           onChange={e => onChange(field.key, e.target.value)}
           placeholder={field.placeholder}
-          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+          className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
         />
       )}
       {example && (
@@ -1514,18 +1494,18 @@ function CharterField({ field, value, onChange, tip, recommended }) {
           <button
             type="button"
             onClick={() => setShowExample(s => !s)}
-            className="text-xs font-medium text-purple-600 hover:text-purple-800"
+            className="text-xs font-medium text-purple-400 hover:text-purple-300"
           >
             {showExample ? "Hide example" : "Not sure how to fill this out? See an example"}
           </button>
           {showExample && (
-            <div className="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg fade-in">
-              <div className="text-xs font-semibold text-purple-700 uppercase tracking-wide mb-1">Example</div>
-              <div className="text-xs text-purple-900 whitespace-pre-line leading-relaxed mb-2">{example}</div>
+            <div className="mt-2 p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg fade-in">
+              <div className="text-xs font-semibold text-purple-400 uppercase tracking-wide mb-1">Example</div>
+              <div className="text-xs text-bp-text whitespace-pre-line leading-relaxed mb-2">{example}</div>
               <button
                 type="button"
                 onClick={() => { onChange(field.key, example); setShowExample(false); }}
-                className="text-xs font-semibold text-purple-700 hover:text-purple-900 underline"
+                className="text-xs font-semibold text-purple-400 hover:text-purple-300 underline"
               >
                 Use this example
               </button>
@@ -1542,8 +1522,8 @@ function CharterDocument({ data, detail }) {
     if (!value || !value.trim()) return null;
     return (
       <div className="mb-5">
-        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
-        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+        <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-bp-text whitespace-pre-line leading-relaxed">{value}</div>
       </div>
     );
   };
@@ -1551,26 +1531,26 @@ function CharterDocument({ data, detail }) {
   return (
     <div id="charter-print-area">
       <Card className="p-8">
-        <div className="text-center border-b border-slate-200 pb-5 mb-6">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Project Charter</div>
-          <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
-          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+        <div className="text-center border-b border-bp-hair pb-5 mb-6">
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-widest mb-1">Project Charter</div>
+          <h2 className="text-2xl font-bold text-bp-text">{data.title || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-bp-muted">
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Project Manager</div>
-            <div className="text-sm text-slate-800">{data.pmName || "—"}</div>
+            <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Project Manager</div>
+            <div className="text-sm text-bp-text">{data.pmName || "—"}</div>
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Sponsor</div>
-            <div className="text-sm text-slate-800">{data.sponsor || "—"}</div>
+            <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Sponsor</div>
+            <div className="text-sm text-bp-text">{data.sponsor || "—"}</div>
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Budget</div>
-            <div className="text-sm text-slate-800">{data.budget || "—"}</div>
+            <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Budget</div>
+            <div className="text-sm text-bp-text">{data.budget || "—"}</div>
           </div>
         </div>
 
@@ -1585,14 +1565,14 @@ function CharterDocument({ data, detail }) {
         {section("High-Level Risks", data.risks)}
         {section("Success Criteria", data.successCriteria)}
 
-        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-bp-hair text-sm">
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Sponsor Signature / Date</div>
           </div>
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Project Manager Signature / Date</div>
           </div>
         </div>
       </Card>
@@ -1748,9 +1728,9 @@ function assessViability(data) {
 
 function ChecklistRow({ label, pass }) {
   return (
-    <li className="flex items-center gap-2 text-xs text-slate-600">
-      <span className={pass ? "text-green-600" : "text-slate-300"}>{pass ? "✓" : "○"}</span>
-      <span className={pass ? "" : "text-slate-400"}>{label}</span>
+    <li className="flex items-center gap-2 text-xs text-bp-muted">
+      <span className={pass ? "text-green-400" : "text-bp-muted"}>{pass ? "✓" : "○"}</span>
+      <span className={pass ? "" : "text-bp-muted"}>{label}</span>
     </li>
   );
 }
@@ -1758,9 +1738,9 @@ function ChecklistRow({ label, pass }) {
 function CharterViability({ data }) {
   const { readiness, durability, verdict, verdictColor, summary, kickoffChecks, trackChecks } = assessViability(data);
   const colorMap = {
-    green: { bg: "bg-green-600", text: "text-green-700", bar: "bg-green-500" },
-    amber: { bg: "bg-amber-500", text: "text-amber-700", bar: "bg-amber-500" },
-    red: { bg: "bg-red-600", text: "text-red-700", bar: "bg-red-500" },
+    green: { bg: "bg-green-600", text: "text-green-400", bar: "bg-green-500" },
+    amber: { bg: "bg-amber-500", text: "text-amber-400", bar: "bg-amber-500" },
+    red: { bg: "bg-red-600", text: "text-red-400", bar: "bg-red-500" },
   };
   const c = colorMap[verdictColor];
 
@@ -1771,19 +1751,19 @@ function CharterViability({ data }) {
           {verdictColor === "green" ? "✓" : verdictColor === "amber" ? "!" : "✗"}
         </span>
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Will This Charter Be Active?</div>
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Will This Charter Be Active?</div>
           <h3 className={`text-lg font-bold ${c.text}`}>{verdict}</h3>
-          <p className="text-sm text-slate-600 mt-1">{summary}</p>
+          <p className="text-sm text-bp-muted mt-1">{summary}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
         <div>
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-semibold text-slate-700">Ready to Kick Off</span>
-            <span className="text-xs font-bold text-slate-500">{readiness}%</span>
+            <span className="text-xs font-semibold text-bp-text">Ready to Kick Off</span>
+            <span className="text-xs font-bold text-bp-muted">{readiness}%</span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
+          <div className="h-2 bg-bp-surface2 rounded-full overflow-hidden mb-2">
             <div className={`h-full rounded-full ${c.bar}`} style={{ width: `${readiness}%` }} />
           </div>
           <ul className="space-y-1">
@@ -1792,10 +1772,10 @@ function CharterViability({ data }) {
         </div>
         <div>
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-semibold text-slate-700">Likely to Stay on Track</span>
-            <span className="text-xs font-bold text-slate-500">{durability}%</span>
+            <span className="text-xs font-semibold text-bp-text">Likely to Stay on Track</span>
+            <span className="text-xs font-bold text-bp-muted">{durability}%</span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
+          <div className="h-2 bg-bp-surface2 rounded-full overflow-hidden mb-2">
             <div className={`h-full rounded-full ${c.bar}`} style={{ width: `${durability}%` }} />
           </div>
           <ul className="space-y-1">
@@ -1809,17 +1789,17 @@ function CharterViability({ data }) {
 
 function PaceRow({ letter, label, text, color }) {
   const colorMap = {
-    green: "bg-green-100 text-green-800",
-    blue: "bg-blue-100 text-blue-800",
-    amber: "bg-amber-100 text-amber-800",
-    red: "bg-red-100 text-red-800",
+    green: "bg-green-500/15 text-green-400",
+    blue: "bg-blue-500/15 text-blue-400",
+    amber: "bg-amber-500/15 text-amber-400",
+    red: "bg-red-500/15 text-red-400",
   };
   return (
     <div className="flex gap-2 text-xs">
       <span className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center font-bold ${colorMap[color]}`}>{letter}</span>
       <div>
-        <span className="font-semibold text-slate-700">{label}: </span>
-        <span className="text-slate-600">{text}</span>
+        <span className="font-semibold text-bp-text">{label}: </span>
+        <span className="text-bp-muted">{text}</span>
       </div>
     </div>
   );
@@ -1830,10 +1810,10 @@ function PaceGapCard({ gap }) {
   const plan = PACE_PLANS[gap.key];
   if (!plan) return null;
   return (
-    <div className="border border-slate-200 rounded-xl overflow-hidden">
+    <div className="border border-bp-hair rounded-xl overflow-hidden">
       <button className="w-full text-left p-3 flex items-center justify-between gap-2" onClick={() => setOpen(o => !o)}>
-        <span className="text-sm font-medium text-slate-800">{gap.title}</span>
-        <span className={`text-slate-400 text-sm flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+        <span className="text-sm font-medium text-bp-text">{gap.title}</span>
+        <span className={`text-bp-muted text-sm flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
         <div className="px-3 pb-3 space-y-2 fade-in">
@@ -1850,9 +1830,9 @@ function PaceGapCard({ gap }) {
 function CharterHealthCheck({ data, recommended }) {
   const { score, verdict, verdictColor, strengths, gaps } = analyzeCharter(data, recommended);
   const colorMap = {
-    green: { bg: "bg-green-600", text: "text-green-700" },
-    amber: { bg: "bg-amber-500", text: "text-amber-700" },
-    red: { bg: "bg-red-600", text: "text-red-700" },
+    green: { bg: "bg-green-600", text: "text-green-400" },
+    amber: { bg: "bg-amber-500", text: "text-amber-400" },
+    red: { bg: "bg-red-600", text: "text-red-400" },
   };
   const c = colorMap[verdictColor];
 
@@ -1860,7 +1840,7 @@ function CharterHealthCheck({ data, recommended }) {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4 gap-4">
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Charter Health Check</div>
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">Charter Health Check</div>
           <h3 className={`text-xl font-bold ${c.text}`}>{verdict}</h3>
         </div>
         <div className={`w-16 h-16 rounded-full ${c.bg} text-white flex items-center justify-center text-lg font-bold flex-shrink-0`}>
@@ -1870,12 +1850,12 @@ function CharterHealthCheck({ data, recommended }) {
 
       {strengths.length > 0 && (
         <div className="mb-4">
-          <div className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">✓ What's Working</div>
+          <div className="text-xs font-semibold text-green-400 uppercase tracking-wide mb-2">✓ What's Working</div>
           <ul className="space-y-2">
             {strengths.map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="font-medium text-slate-800">{s.title}</span>
-                <p className="text-slate-500 text-xs mt-0.5">{s.detail}</p>
+                <span className="font-medium text-bp-text">{s.title}</span>
+                <p className="text-bp-muted text-xs mt-0.5">{s.detail}</p>
               </li>
             ))}
           </ul>
@@ -1884,12 +1864,12 @@ function CharterHealthCheck({ data, recommended }) {
 
       {gaps.length > 0 && (
         <div>
-          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Parts You Might Have Missed</div>
+          <div className="text-xs font-semibold text-amber-400 uppercase tracking-wide mb-2">Parts You Might Have Missed</div>
           <ul className="space-y-2">
             {gaps.map((g, i) => (
-              <li key={i} className="text-sm bg-amber-50 rounded-lg p-2.5">
-                <span className="font-medium text-slate-800">{g.title}</span>
-                <p className="text-slate-600 text-xs mt-0.5">{g.detail}</p>
+              <li key={i} className="text-sm bg-amber-500/10 rounded-lg p-2.5">
+                <span className="font-medium text-bp-text">{g.title}</span>
+                <p className="text-bp-muted text-xs mt-0.5">{g.detail}</p>
               </li>
             ))}
           </ul>
@@ -1897,9 +1877,9 @@ function CharterHealthCheck({ data, recommended }) {
       )}
 
       {gaps.length > 0 && (
-        <div className="mt-5 pt-5 border-t border-slate-100">
-          <div className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1">What To Do — PACE Backup Plans</div>
-          <p className="text-xs text-slate-500 mb-3">For each gap: Primary (best fix), Alternate (next best), Contingency (fallback), Emergency (last resort). Tap a gap to expand.</p>
+        <div className="mt-5 pt-5 border-t border-bp-hair">
+          <div className="text-xs font-semibold text-bp-text uppercase tracking-wide mb-1">What To Do — PACE Backup Plans</div>
+          <p className="text-xs text-bp-muted mb-3">For each gap: Primary (best fix), Alternate (next best), Contingency (fallback), Emergency (last resort). Tap a gap to expand.</p>
           <div className="space-y-2">
             {gaps.map((g, i) => <PaceGapCard key={i} gap={g} />)}
           </div>
@@ -1972,48 +1952,48 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
         <CharterViability data={data} />
         <CharterHealthCheck data={data} recommended={recommended} />
         <div className="flex flex-wrap justify-center gap-3">
-          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-bp-hair rounded-xl text-bp-text font-semibold hover:border-bp-muted hover:bg-bp-surface2 transition-colors text-sm">
             ← Edit Charter
           </button>
-          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-bp-amber text-bp-bg rounded-xl font-semibold hover:brightness-110 transition-colors text-sm">
             Download as .txt
           </button>
-          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-bp-surface2 border border-bp-hair text-bp-text rounded-xl font-semibold hover:bg-bp-hair transition-colors text-sm">
             Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This Charter</div>
-          <p className="text-xs text-slate-500 mb-3">We'll send the full charter straight to your inbox.</p>
+          <div className="text-sm font-semibold text-bp-text mb-1">Email Yourself This Charter</div>
+          <p className="text-xs text-bp-muted mb-3">We'll send the full charter straight to your inbox.</p>
           <div className="flex gap-2">
             <input
               type="email"
               value={email}
               onChange={e => { setEmail(e.target.value); if (emailStatus !== "sending") setEmailStatus("idle"); }}
               placeholder="you@email.com"
-              className="flex-1 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none px-3 py-2 text-sm"
+              className="flex-1 rounded-lg border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none px-3 py-2 text-sm"
             />
             <button
               onClick={emailCharter}
               disabled={!email.trim() || emailStatus === "sending"}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              className="px-4 py-2 bg-bp-amber text-bp-bg rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             >
               {emailStatus === "sending" ? "Sending…" : "Send"}
             </button>
           </div>
           {emailStatus === "sent" && (
-            <p className="text-xs text-green-600 font-medium mt-2">✓ Sent! Check your inbox.</p>
+            <p className="text-xs text-green-400 font-medium mt-2">✓ Sent! Check your inbox.</p>
           )}
           {emailStatus === "error" && (
-            <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
+            <p className="text-xs text-red-400 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
           )}
         </Card>
 
         <div className="text-center pb-4 pt-2">
           <button
             onClick={() => onBuildScopePlan(data.title)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+            className="bg-bp-amber text-bp-bg px-6 py-3 rounded-xl font-semibold hover:brightness-110 transition-colors shadow-sm text-sm"
           >
             Build Your Scope Management Plan →
           </button>
@@ -2025,8 +2005,8 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Project Charter</h2>
-        <p className="text-slate-500 text-sm max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-bp-text mb-1">Build Your Project Charter</h2>
+        <p className="text-bp-muted text-sm max-w-md mx-auto">
           A charter formally authorizes your project. Fill in each section below — tips are tailored to your recommended methodology, {detail.name}.
         </p>
       </div>
@@ -2045,13 +2025,13 @@ function CharterBuilder({ recommended, detail, onBack, onBuildScopePlan }) {
       </Card>
 
       <div className="flex justify-between items-center pb-8">
-        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
           ← Back to Results
         </button>
         <button
           onClick={() => setView("preview")}
           disabled={!requiredFilled}
-          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Generate Charter →
         </button>
@@ -2069,8 +2049,8 @@ function ScopePlanDocument({ data, detail }) {
     if (!value || !value.trim()) return null;
     return (
       <div className="mb-5">
-        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
-        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+        <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-bp-text whitespace-pre-line leading-relaxed">{value}</div>
       </div>
     );
   };
@@ -2078,10 +2058,10 @@ function ScopePlanDocument({ data, detail }) {
   return (
     <div id="scope-print-area">
       <Card className="p-8">
-        <div className="text-center border-b border-slate-200 pb-5 mb-6">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Scope Management Plan</div>
-          <h2 className="text-2xl font-bold text-slate-900">{data.projectTitle || "Untitled Project"}</h2>
-          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+        <div className="text-center border-b border-bp-hair pb-5 mb-6">
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-widest mb-1">Scope Management Plan</div>
+          <h2 className="text-2xl font-bold text-bp-text">{data.projectTitle || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-bp-muted">
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
@@ -2095,14 +2075,14 @@ function ScopePlanDocument({ data, detail }) {
         {section("Scope Creep Prevention", data.scopeCreepPrevention)}
         {section("Requirements Traceability", data.requirementsTraceability)}
 
-        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-bp-hair text-sm">
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Sponsor Signature / Date</div>
           </div>
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Project Manager Signature / Date</div>
           </div>
         </div>
       </Card>
@@ -2168,41 +2148,41 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
       <div className="fade-in space-y-5">
         <ScopePlanDocument data={data} detail={detail} />
         <div className="flex flex-wrap justify-center gap-3">
-          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-bp-hair rounded-xl text-bp-text font-semibold hover:border-bp-muted hover:bg-bp-surface2 transition-colors text-sm">
             ← Edit Plan
           </button>
-          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-bp-amber text-bp-bg rounded-xl font-semibold hover:brightness-110 transition-colors text-sm">
             Download as .txt
           </button>
-          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-bp-surface2 border border-bp-hair text-bp-text rounded-xl font-semibold hover:bg-bp-hair transition-colors text-sm">
             Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This Scope Plan</div>
-          <p className="text-xs text-slate-500 mb-3">We'll send the full scope plan straight to your inbox.</p>
+          <div className="text-sm font-semibold text-bp-text mb-1">Email Yourself This Scope Plan</div>
+          <p className="text-xs text-bp-muted mb-3">We'll send the full scope plan straight to your inbox.</p>
           <div className="flex gap-2">
             <input
               type="email"
               value={email}
               onChange={e => { setEmail(e.target.value); if (emailStatus !== "sending") setEmailStatus("idle"); }}
               placeholder="you@email.com"
-              className="flex-1 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none px-3 py-2 text-sm"
+              className="flex-1 rounded-lg border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none px-3 py-2 text-sm"
             />
             <button
               onClick={emailScopePlan}
               disabled={!email.trim() || emailStatus === "sending"}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              className="px-4 py-2 bg-bp-amber text-bp-bg rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             >
               {emailStatus === "sending" ? "Sending…" : "Send"}
             </button>
           </div>
           {emailStatus === "sent" && (
-            <p className="text-xs text-green-600 font-medium mt-2">✓ Sent! Check your inbox.</p>
+            <p className="text-xs text-green-400 font-medium mt-2">✓ Sent! Check your inbox.</p>
           )}
           {emailStatus === "error" && (
-            <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
+            <p className="text-xs text-red-400 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
           )}
         </Card>
 
@@ -2210,7 +2190,7 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
           <div className="text-center pb-4 pt-2">
             <button
               onClick={() => onNext(data.projectTitle)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+              className="bg-bp-amber text-bp-bg px-6 py-3 rounded-xl font-semibold hover:brightness-110 transition-colors shadow-sm text-sm"
             >
               Build Your Resource Management Plan →
             </button>
@@ -2223,15 +2203,15 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold text-slate-900 mb-1">Build Your Scope Management Plan</h2>
-        <p className="text-slate-500 text-sm max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-bp-text mb-1">Build Your Scope Management Plan</h2>
+        <p className="text-bp-muted text-sm max-w-md mx-auto">
           A scope management plan defines how you'll set, document, and protect your project's boundaries.
         </p>
       </div>
 
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-2 text-sm">What Is a Scope Management Plan?</h3>
-        <p className="text-xs text-slate-600 leading-relaxed mb-3">
+        <h3 className="font-semibold text-bp-text mb-2 text-sm">What Is a Scope Management Plan?</h3>
+        <p className="text-xs text-bp-muted leading-relaxed mb-3">
           It's the document that governs how project scope gets defined, broken down, verified, and controlled — separate from the scope statement itself. Where the Project Charter authorizes the project and states scope at a high level, this plan describes the <em>process</em> you'll follow so scope stays accurate and doesn't quietly grow out of control.
         </p>
         <ul className="space-y-1.5">
@@ -2243,7 +2223,7 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
             "How scope change requests are submitted, evaluated, and approved or rejected",
             "What specifically prevents scope creep on this project",
           ].map((b, i) => (
-            <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+            <li key={i} className="flex items-start gap-2 text-xs text-bp-text">
               <span className="text-blue-500 mt-0.5">•</span>
               <span>{b}</span>
             </li>
@@ -2265,13 +2245,13 @@ function ScopePlanBuilder({ recommended, detail, projectTitle, onBack, onNext })
       </Card>
 
       <div className="flex justify-between items-center pb-8">
-        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
           ← Back to Charter
         </button>
         <button
           onClick={() => setView("preview")}
           disabled={!requiredFilled}
-          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Generate Scope Plan →
         </button>
@@ -2290,8 +2270,8 @@ function PlanDocument({ planType, data, detail }) {
     if (!value || !value.trim()) return null;
     return (
       <div className="mb-5">
-        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{label}</div>
-        <div className="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{value}</div>
+        <div className="text-xs font-semibold text-bp-muted uppercase tracking-wide mb-1">{label}</div>
+        <div className="text-sm text-bp-text whitespace-pre-line leading-relaxed">{value}</div>
       </div>
     );
   };
@@ -2299,10 +2279,10 @@ function PlanDocument({ planType, data, detail }) {
   return (
     <div id="plan-print-area">
       <Card className="p-8">
-        <div className="text-center border-b border-slate-200 pb-5 mb-6">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">{planType.docLabel}</div>
-          <h2 className="text-2xl font-bold text-slate-900">{data.title || "Untitled Project"}</h2>
-          <div className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+        <div className="text-center border-b border-bp-hair pb-5 mb-6">
+          <div className="text-xs font-semibold text-bp-muted uppercase tracking-widest mb-1">{planType.docLabel}</div>
+          <h2 className="text-2xl font-bold text-bp-text">{data.title || "Untitled Project"}</h2>
+          <div className="mt-2 inline-flex items-center gap-1 text-xs text-bp-muted">
             <span>Recommended methodology: <strong>{detail.name}</strong></span>
           </div>
         </div>
@@ -2311,14 +2291,14 @@ function PlanDocument({ planType, data, detail }) {
           <div key={f.key}>{section(f.label, data[f.key])}</div>
         ))}
 
-        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-slate-200 text-sm">
+        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-bp-hair text-sm">
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Sponsor Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Sponsor Signature / Date</div>
           </div>
           <div>
-            <div className="border-b border-slate-400 pb-6 mb-1"></div>
-            <div className="text-xs text-slate-500">Project Manager Signature / Date</div>
+            <div className="border-b border-bp-muted pb-6 mb-1"></div>
+            <div className="text-xs text-bp-muted">Project Manager Signature / Date</div>
           </div>
         </div>
       </Card>
@@ -2384,41 +2364,41 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
       <div className="fade-in space-y-5">
         <PlanDocument planType={planType} data={data} detail={detail} />
         <div className="flex flex-wrap justify-center gap-3">
-          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-slate-300 rounded-xl text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-50 transition-colors text-sm">
+          <button onClick={() => setView("form")} className="px-5 py-2.5 border-2 border-bp-hair rounded-xl text-bp-text font-semibold hover:border-bp-muted hover:bg-bp-surface2 transition-colors text-sm">
             ← Edit Plan
           </button>
-          <button onClick={downloadTxt} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm">
+          <button onClick={downloadTxt} className="px-5 py-2.5 bg-bp-amber text-bp-bg rounded-xl font-semibold hover:brightness-110 transition-colors text-sm">
             Download as .txt
           </button>
-          <button onClick={() => window.print()} className="px-5 py-2.5 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-colors text-sm">
+          <button onClick={() => window.print()} className="px-5 py-2.5 bg-bp-surface2 border border-bp-hair text-bp-text rounded-xl font-semibold hover:bg-bp-hair transition-colors text-sm">
             Print / Save as PDF
           </button>
         </div>
 
         <Card className="p-4 max-w-md mx-auto">
-          <div className="text-sm font-semibold text-slate-900 mb-1">Email Yourself This {planType.docLabel}</div>
-          <p className="text-xs text-slate-500 mb-3">We'll send the full plan straight to your inbox.</p>
+          <div className="text-sm font-semibold text-bp-text mb-1">Email Yourself This {planType.docLabel}</div>
+          <p className="text-xs text-bp-muted mb-3">We'll send the full plan straight to your inbox.</p>
           <div className="flex gap-2">
             <input
               type="email"
               value={email}
               onChange={e => { setEmail(e.target.value); if (emailStatus !== "sending") setEmailStatus("idle"); }}
               placeholder="you@email.com"
-              className="flex-1 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none px-3 py-2 text-sm"
+              className="flex-1 rounded-lg border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none px-3 py-2 text-sm"
             />
             <button
               onClick={emailPlan}
               disabled={!email.trim() || emailStatus === "sending"}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              className="px-4 py-2 bg-bp-amber text-bp-bg rounded-lg text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             >
               {emailStatus === "sending" ? "Sending…" : "Send"}
             </button>
           </div>
           {emailStatus === "sent" && (
-            <p className="text-xs text-green-600 font-medium mt-2">✓ Sent! Check your inbox.</p>
+            <p className="text-xs text-green-400 font-medium mt-2">✓ Sent! Check your inbox.</p>
           )}
           {emailStatus === "error" && (
-            <p className="text-xs text-red-600 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
+            <p className="text-xs text-red-400 font-medium mt-2">Something went wrong — double-check the address and try again.</p>
           )}
         </Card>
 
@@ -2426,7 +2406,7 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
           <div className="text-center pb-4 pt-2">
             <button
               onClick={() => onNext(data.title)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+              className="bg-bp-amber text-bp-bg px-6 py-3 rounded-xl font-semibold hover:brightness-110 transition-colors shadow-sm text-sm"
             >
               {nextLabel} →
             </button>
@@ -2439,16 +2419,16 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
   return (
     <div className="fade-in space-y-5">
       <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold text-slate-900 mb-1">{planType.formTitle}</h2>
-        <p className="text-slate-500 text-sm max-w-md mx-auto">{planType.formIntro}</p>
+        <h2 className="text-2xl font-bold text-bp-text mb-1">{planType.formTitle}</h2>
+        <p className="text-bp-muted text-sm max-w-md mx-auto">{planType.formIntro}</p>
       </div>
 
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-900 mb-2 text-sm">{planType.introTitle}</h3>
-        <p className="text-xs text-slate-600 leading-relaxed mb-3">{planType.introBody}</p>
+        <h3 className="font-semibold text-bp-text mb-2 text-sm">{planType.introTitle}</h3>
+        <p className="text-xs text-bp-muted leading-relaxed mb-3">{planType.introBody}</p>
         <ul className="space-y-1.5">
           {planType.introBullets.map((b, i) => (
-            <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+            <li key={i} className="flex items-start gap-2 text-xs text-bp-text">
               <span className="text-blue-500 mt-0.5">•</span>
               <span>{b}</span>
             </li>
@@ -2470,13 +2450,13 @@ function PlanBuilder({ planType, recommended, detail, projectTitle, onBack, onNe
       </Card>
 
       <div className="flex justify-between items-center pb-8">
-        <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+        <button onClick={onBack} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
           ← Back
         </button>
         <button
           onClick={() => setView("preview")}
           disabled={!requiredFilled}
-          className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Generate {planType.docLabel} →
         </button>
@@ -2492,29 +2472,29 @@ function DocumentHub({ onSelect, onBack, compact }) {
   return (
     <div className="fade-in">
       <div className="text-center mb-5">
-        <h2 className={compact ? "text-lg font-bold text-slate-900 mb-1" : "text-3xl font-bold text-slate-900 mb-2"}>
+        <h2 className={compact ? "text-lg font-bold text-bp-text mb-1" : "text-3xl font-bold text-bp-text mb-2"}>
           {compact ? "Choose a Document to Build" : "Choose a Document to Build"}
         </h2>
-        <p className={compact ? "text-slate-500 text-sm max-w-md mx-auto" : "text-slate-500 text-lg max-w-md mx-auto"}>
+        <p className={compact ? "text-bp-muted text-sm max-w-md mx-auto" : "text-bp-muted text-lg max-w-md mx-auto"}>
           Pick which planning document you want to work on — no need to go in order.
         </p>
       </div>
 
       <Card className="p-6 max-w-md mx-auto">
-        <label className="block text-sm font-semibold text-slate-900 mb-2">Document</label>
+        <label className="block text-sm font-semibold text-bp-text mb-2">Document</label>
         <select
           value={selected}
           onChange={e => setSelected(e.target.value)}
-          className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700 mb-2"
+          className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text mb-2"
         >
           {DOCUMENT_HUB_ITEMS.map(item => (
             <option key={item.key} value={item.key}>{item.label}</option>
           ))}
         </select>
-        {selectedItem && <p className="text-xs text-slate-500 mb-4">{selectedItem.desc}</p>}
+        {selectedItem && <p className="text-xs text-bp-muted mb-4">{selectedItem.desc}</p>}
         <button
           onClick={() => onSelect(selected)}
-          className="w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm"
+          className="w-full bg-bp-amber text-bp-bg px-6 py-3 rounded-xl font-semibold hover:brightness-110 transition-colors shadow-sm text-sm"
         >
           Go →
         </button>
@@ -2522,7 +2502,7 @@ function DocumentHub({ onSelect, onBack, compact }) {
 
       {onBack && (
         <div className="text-center pt-6 pb-8">
-          <button onClick={onBack} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+          <button onClick={onBack} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
             ← Back to Results
           </button>
         </div>
@@ -2643,9 +2623,9 @@ function AssessSection() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <CompassLogo className="w-16 h-16 mx-auto mb-4" />
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.05]">Find Your Method</h1>
-          <p className="text-slate-500 text-lg max-w-md mx-auto">
+          <CompassLogo className="w-16 h-16 mx-auto mb-4" colorClass="text-bp-amber" />
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-bp-text mb-3 tracking-tight leading-[1.05]">Find Your Method</h1>
+          <p className="text-bp-muted text-lg max-w-md mx-auto">
             Answer 7 quick questions about your company and projects. We'll recommend the best project management methodology — and explain why.
           </p>
         </div>
@@ -2656,19 +2636,19 @@ function AssessSection() {
             { name: "Hybrid", desc: "Best of both" },
           ].map(m => (
             <Card key={m.name} className="p-4 text-center">
-              <div className="font-semibold text-slate-900 text-sm">{m.name}</div>
-              <div className="text-xs text-slate-500">{m.desc}</div>
+              <div className="font-semibold text-bp-text text-sm">{m.name}</div>
+              <div className="text-xs text-bp-muted">{m.desc}</div>
             </Card>
           ))}
         </div>
         <div className="text-center">
           <button
             onClick={startAssessment}
-            className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="bg-bp-amber text-bp-bg px-8 py-4 rounded-xl font-semibold text-lg hover:brightness-110 transition-colors shadow-sm"
           >
             Start Assessment →
           </button>
-          <p className="text-xs text-slate-400 mt-3">Takes about 2 minutes · No account required</p>
+          <p className="text-xs text-bp-muted mt-3">Takes about 2 minutes · No account required</p>
         </div>
       </div>
     );
@@ -2755,9 +2735,9 @@ function CommunitySection() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <CompassLogo className="w-14 h-14 mx-auto mb-4" />
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.05]">PM Compass Community</h1>
-        <p className="text-slate-500 text-lg max-w-lg mx-auto">
+        <CompassLogo className="w-14 h-14 mx-auto mb-4" colorClass="text-bp-amber" />
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-bp-text mb-3 tracking-tight leading-[1.05]">PM Compass Community</h1>
+        <p className="text-bp-muted text-lg max-w-lg mx-auto">
           Assess and Learn help you plan your own project. Community connects you to people doing the same thing — so you can get input, share progress, and see how similar projects were planned by others.
         </p>
       </div>
@@ -2766,8 +2746,8 @@ function CommunitySection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {coreIdeas.map((idea, i) => (
             <Card key={i} className="p-5">
-              <h3 className="font-semibold text-slate-900 text-sm mb-1">{idea.title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{idea.desc}</p>
+              <h3 className="font-semibold text-bp-text text-sm mb-1">{idea.title}</h3>
+              <p className="text-xs text-bp-muted leading-relaxed">{idea.desc}</p>
             </Card>
           ))}
         </div>
@@ -2777,18 +2757,18 @@ function CommunitySection() {
         <div className="text-center">
           <button
             onClick={() => setStep("why")}
-            className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="bg-bp-amber text-bp-bg px-8 py-4 rounded-xl font-semibold text-lg hover:brightness-110 transition-colors shadow-sm"
           >
             Join the Community →
           </button>
-          <p className="text-xs text-slate-400 mt-3">More features coming soon</p>
+          <p className="text-xs text-bp-muted mt-3">More features coming soon</p>
         </div>
       )}
 
       {step === "why" && (
         <Card className="p-6 max-w-lg mx-auto fade-in">
-          <h2 className="text-lg font-bold text-slate-900 mb-1">What brings you here?</h2>
-          <p className="text-sm text-slate-500 mb-4">This helps us point you toward the right examples and discussions.</p>
+          <h2 className="text-lg font-bold text-bp-text mb-1">What brings you here?</h2>
+          <p className="text-sm text-bp-muted mb-4">This helps us point you toward the right examples and discussions.</p>
           <div className="space-y-3 mb-5">
             {JOIN_REASONS.map(r => (
               <button
@@ -2796,25 +2776,25 @@ function CommunitySection() {
                 onClick={() => setReason(r.key)}
                 className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
                   reason === r.key
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                    ? "border-bp-amber bg-bp-amber/10"
+                    : "border-bp-hair hover:border-bp-hair hover:bg-bp-surface2"
                 }`}
               >
                 <div>
-                  <div className={`text-sm font-semibold ${reason === r.key ? "text-blue-900" : "text-slate-800"}`}>{r.label}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{r.desc}</div>
+                  <div className={`text-sm font-semibold ${reason === r.key ? "text-bp-amber" : "text-bp-text"}`}>{r.label}</div>
+                  <div className="text-xs text-bp-muted mt-0.5">{r.desc}</div>
                 </div>
               </button>
             ))}
           </div>
           <div className="flex justify-between items-center">
-            <button onClick={() => setStep("intro")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+            <button onClick={() => setStep("intro")} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
               ← Back
             </button>
             <button
               onClick={() => setStep("projects")}
               disabled={!reason}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Continue →
             </button>
@@ -2824,15 +2804,15 @@ function CommunitySection() {
 
       {step === "projects" && (
         <Card className="p-6 max-w-lg mx-auto fade-in">
-          <h2 className="text-lg font-bold text-slate-900 mb-1">Do you have any projects you're currently working on?</h2>
-          <p className="text-sm text-slate-500 mb-4">This helps us match you with relevant examples and discussions.</p>
+          <h2 className="text-lg font-bold text-bp-text mb-1">Do you have any projects you're currently working on?</h2>
+          <p className="text-sm text-bp-muted mb-4">This helps us match you with relevant examples and discussions.</p>
           <div className="flex gap-3 mb-4">
             <button
               onClick={() => setHasProjects("yes")}
               className={`flex-1 p-4 rounded-xl border-2 text-sm font-semibold transition-all ${
                 hasProjects === "yes"
-                  ? "border-blue-500 bg-blue-50 text-blue-900"
-                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+                  ? "border-bp-amber bg-bp-amber/10 text-bp-amber"
+                  : "border-bp-hair hover:border-bp-hair hover:bg-bp-surface2 text-bp-text"
               }`}
             >
               Yes
@@ -2841,8 +2821,8 @@ function CommunitySection() {
               onClick={() => { setHasProjects("no"); setProjectDetails(""); }}
               className={`flex-1 p-4 rounded-xl border-2 text-sm font-semibold transition-all ${
                 hasProjects === "no"
-                  ? "border-blue-500 bg-blue-50 text-blue-900"
-                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700"
+                  ? "border-bp-amber bg-bp-amber/10 text-bp-amber"
+                  : "border-bp-hair hover:border-bp-hair hover:bg-bp-surface2 text-bp-text"
               }`}
             >
               No
@@ -2850,24 +2830,24 @@ function CommunitySection() {
           </div>
           {hasProjects === "yes" && (
             <div className="mb-5 fade-in">
-              <label className="block text-sm font-semibold text-slate-900 mb-1">What are you working on? (optional)</label>
+              <label className="block text-sm font-semibold text-bp-text mb-1">What are you working on? (optional)</label>
               <textarea
                 value={projectDetails}
                 onChange={e => setProjectDetails(e.target.value)}
                 placeholder="e.g. Redesigning our checkout flow, launching a new product line, migrating to a new CRM..."
                 rows={3}
-                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
               />
             </div>
           )}
           <div className="flex justify-between items-center">
-            <button onClick={() => setStep("why")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+            <button onClick={() => setStep("why")} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
               ← Back
             </button>
             <button
               onClick={() => setStep("details")}
               disabled={!hasProjects}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Continue →
             </button>
@@ -2877,42 +2857,42 @@ function CommunitySection() {
 
       {step === "details" && (
         <Card className="p-6 max-w-lg mx-auto fade-in">
-          <h2 className="text-lg font-bold text-slate-900 mb-1">Tell us a bit about yourself</h2>
-          <p className="text-sm text-slate-500 mb-4">Just the basics, so we can set up your profile.</p>
+          <h2 className="text-lg font-bold text-bp-text mb-1">Tell us a bit about yourself</h2>
+          <p className="text-sm text-bp-muted mb-4">Just the basics, so we can set up your profile.</p>
 
           <div className="space-y-4 mb-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Full Name <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-bp-text mb-1">Full Name <span className="text-red-400">*</span></label>
               <input
                 type="text"
                 value={profile.name}
                 onChange={e => updateProfile("name", e.target.value)}
                 placeholder="Jordan Lee"
-                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Email <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-bp-text mb-1">Email <span className="text-red-400">*</span></label>
               <input
                 type="email"
                 value={profile.email}
                 onChange={e => updateProfile("email", e.target.value)}
                 placeholder="you@email.com"
-                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Date of Birth</label>
+                <label className="block text-sm font-semibold text-bp-text mb-1">Date of Birth</label>
                 <input
                   type="date"
                   value={profile.dob}
                   onChange={e => updateProfile("dob", e.target.value)}
-                  className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                  className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Age</label>
+                <label className="block text-sm font-semibold text-bp-text mb-1">Age</label>
                 <input
                   type="number"
                   min="1"
@@ -2920,16 +2900,16 @@ function CommunitySection() {
                   value={profile.age}
                   onChange={e => updateProfile("age", e.target.value)}
                   placeholder="30"
-                  className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                  className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Education</label>
+              <label className="block text-sm font-semibold text-bp-text mb-1">Education</label>
               <select
                 value={profile.education}
                 onChange={e => updateProfile("education", e.target.value)}
-                className="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none p-3 text-sm text-slate-700"
+                className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 focus:border-bp-amber focus:outline-none p-3 text-sm text-bp-text"
               >
                 <option value="">Select one</option>
                 <option value="high-school">High School</option>
@@ -2944,17 +2924,17 @@ function CommunitySection() {
           </div>
 
           {submitStatus === "error" && (
-            <p className="text-xs text-red-600 font-medium mb-3">Something went wrong submitting your info — you can try again, or continue anyway.</p>
+            <p className="text-xs text-red-400 font-medium mb-3">Something went wrong submitting your info — you can try again, or continue anyway.</p>
           )}
 
           <div className="flex justify-between items-center">
-            <button onClick={() => setStep("projects")} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">
+            <button onClick={() => setStep("projects")} className="px-4 py-2 text-sm text-bp-muted hover:text-bp-text">
               ← Back
             </button>
             <button
               onClick={submitSignup}
               disabled={!profileValid || submitStatus === "sending"}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2.5 bg-bp-amber text-bp-bg rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {submitStatus === "sending" ? "Joining…" : "Join the Community →"}
             </button>
@@ -2964,12 +2944,12 @@ function CommunitySection() {
 
       {step === "joined" && (
         <div className="text-center fade-in">
-          <p className="text-slate-700 font-semibold text-lg">You're in{profile.name.trim() ? `, ${profile.name.trim()}` : ""}!</p>
-          <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">{JOIN_REASON_MESSAGES[reason]}</p>
+          <p className="text-bp-text font-semibold text-lg">You're in{profile.name.trim() ? `, ${profile.name.trim()}` : ""}!</p>
+          <p className="text-bp-muted text-sm mt-1 max-w-sm mx-auto">{JOIN_REASON_MESSAGES[reason]}</p>
           {hasProjects === "yes" && projectDetails.trim() && (
-            <p className="text-slate-400 text-xs mt-2 max-w-sm mx-auto">Noted — we'll keep "{projectDetails.trim()}" in mind when surfacing relevant examples and discussions.</p>
+            <p className="text-bp-muted text-xs mt-2 max-w-sm mx-auto">Noted — we'll keep "{projectDetails.trim()}" in mind when surfacing relevant examples and discussions.</p>
           )}
-          <p className="text-xs text-slate-400 mt-3">More features coming soon</p>
+          <p className="text-xs text-bp-muted mt-3">More features coming soon</p>
         </div>
       )}
     </div>
@@ -3066,7 +3046,7 @@ function App() {
         {activeTab === "community" && <CommunitySection />}
       </main>
 
-      <footer className="border-t border-slate-200 bg-white mt-8 py-6 text-center text-xs text-slate-400">
+      <footer className="border-t border-bp-hair bg-bp-surface mt-8 py-6 text-center text-xs text-bp-muted">
         PM Compass · Built on standard PM foundations (PMI/PMBOK, Agile Manifesto) · For educational use
       </footer>
     </div>
