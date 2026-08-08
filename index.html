@@ -2671,6 +2671,13 @@ function AssessSection() {
    ROOT APP
    ============================================================ */
 
+const SEED_PROJECTS = [
+  { name: "Neighborhood coffee shop launch", owner: "Maya R.", methodology: "Waterfall", desc: "Opening a small café in Q1 — fit-out, permits, hiring, and soft launch. Fixed timeline around the lease start date.", lookingFor: "Feedback on my milestone schedule" },
+  { name: "Freelance client onboarding revamp", owner: "Devin K.", methodology: "Agile", desc: "Rebuilding how I onboard new design clients — intake form, kickoff, and a repeatable first-two-weeks flow.", lookingFor: "A co-planner to sanity-check scope" },
+  { name: "Nonprofit fundraising gala", owner: "Priya S.", methodology: "Hybrid", desc: "Annual gala for ~200 guests. Fixed date and venue, but the program and sponsorships are still evolving.", lookingFor: "Risk plan review" },
+  { name: "Etsy shop → wholesale expansion", owner: "Sam T.", methodology: "Not sure yet", desc: "Moving my handmade candle shop into wholesale — sourcing, packaging, and a small sales team.", lookingFor: "Help picking a methodology" },
+];
+
 const JOIN_REASONS = [
   { key: "personal", label: "Help with my own personal projects", desc: "Get feedback, examples, and input on something you're currently planning." },
   { key: "experience", label: "Get experience managing other projects", desc: "Contribute to other people's plans and build real project management experience." },
@@ -2692,8 +2699,31 @@ function CommunitySection() {
   const updateProfile = (key, value) => setProfile(prev => ({ ...prev, [key]: value }));
   const profileValid = profile.name.trim() && profile.email.trim();
   const [submitStatus, setSubmitStatus] = useState("idle"); // idle | sending | error
+  const [view, setView] = useState("main"); // "main" | "board"
+  const [projects, setProjects] = useState(SEED_PROJECTS);
+  const [newProject, setNewProject] = useState({ name: "", owner: "", methodology: "", desc: "", lookingFor: "" });
+  const updateNewProject = (key, value) => setNewProject(prev => ({ ...prev, [key]: value }));
+  const newProjectValid = newProject.name.trim() && newProject.owner.trim() && newProject.desc.trim();
 
   const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw9f5frsGCGBcT0-fBSPE-dKSi965WrxmV2I9hYEjxKcUAQZ6ZiAACMM9P_h_A7exop/exec";
+
+  const postProject = () => {
+    const entry = {
+      name: newProject.name.trim(),
+      owner: newProject.owner.trim(),
+      methodology: newProject.methodology || "Not sure yet",
+      desc: newProject.desc.trim(),
+      lookingFor: newProject.lookingFor.trim(),
+    };
+    setProjects(prev => [entry, ...prev]);
+    fetch(GOOGLE_SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ type: "project", ...entry }),
+    }).catch(err => console.error("Project submission failed:", err));
+    setNewProject({ name: "", owner: "", methodology: "", desc: "", lookingFor: "" });
+  };
 
   const submitSignup = () => {
     setSubmitStatus("sending");
@@ -2722,11 +2752,66 @@ function CommunitySection() {
   };
 
   const coreIdeas = [
-    { title: "Collaborate on Projects", desc: "Invite others to view or contribute to your project plan — get feedback on a WBS, schedule, or estimate before locking it in." },
+    { title: "Collaborate on Projects", desc: "See what others are working on and post your own project to find feedback or collaborators.", onClick: () => setView("board") },
     { title: "Browse Project Examples", desc: "See how other users structured their charter, scope, or schedule for similar project types or industries — real-world reference, not static templates." },
     { title: "Discussion & Q&A", desc: "Ask about a specific planning challenge — like how to estimate a task — and get input from others who've faced it." },
     { title: "Methodology-Based Groups", desc: "Filter by Waterfall, Agile, or Hybrid — since planning questions and challenges differ by approach." },
   ];
+
+  if (view === "board") {
+    const methodColor = (m) => m === "Waterfall" ? "text-blue-400" : m === "Agile" ? "text-green-400" : m === "Hybrid" ? "text-purple-400" : "text-bp-muted";
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-8 fade-in">
+        <button onClick={() => setView("main")} className="px-2 py-1 text-sm text-bp-muted hover:text-bp-text mb-4">
+          ← Back to Community
+        </button>
+        <h1 className="text-3xl font-extrabold text-bp-text mb-2 tracking-tight">Collaborate on Projects</h1>
+        <p className="text-bp-muted text-sm mb-6">See what others are working on, and post your own to find feedback or a co-planner.</p>
+
+        <Card className="p-6 mb-8">
+          <h2 className="font-semibold text-bp-text text-base mb-4">List your project</h2>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input type="text" value={newProject.name} onChange={e => updateNewProject("name", e.target.value)} placeholder="Project name" className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none p-3 text-sm" />
+              <input type="text" value={newProject.owner} onChange={e => updateNewProject("owner", e.target.value)} placeholder="Your name" className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none p-3 text-sm" />
+            </div>
+            <select value={newProject.methodology} onChange={e => updateNewProject("methodology", e.target.value)} className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none p-3 text-sm">
+              <option value="">Methodology (optional)</option>
+              <option value="Waterfall">Waterfall</option>
+              <option value="Agile">Agile</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+            <textarea value={newProject.desc} onChange={e => updateNewProject("desc", e.target.value)} placeholder="What's the project? A sentence or two." rows={2} className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none p-3 text-sm" />
+            <input type="text" value={newProject.lookingFor} onChange={e => updateNewProject("lookingFor", e.target.value)} placeholder="What are you looking for? (e.g. feedback on scope)" className="w-full rounded-xl border-2 border-bp-hair bg-bp-surface2 text-bp-text focus:border-bp-amber focus:outline-none p-3 text-sm" />
+          </div>
+          <button onClick={postProject} disabled={!newProjectValid} className="mt-4 bg-bp-amber text-bp-bg px-5 py-2.5 rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+            Post Project
+          </button>
+        </Card>
+
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-bp-text text-base">Current projects</h2>
+          <span className="font-mono text-xs text-bp-muted">{projects.length} listed</span>
+        </div>
+        <div className="space-y-3">
+          {projects.map((p, i) => (
+            <Card key={i} className="p-5">
+              <div className="flex items-start justify-between gap-3 mb-1">
+                <h3 className="font-semibold text-bp-text text-sm">{p.name}</h3>
+                <span className={`font-mono text-xs flex-shrink-0 ${methodColor(p.methodology)}`}>{p.methodology}</span>
+              </div>
+              <p className="text-xs text-bp-muted mb-3 leading-relaxed">{p.desc}</p>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-bp-muted">by {p.owner}</span>
+                {p.lookingFor && <span className="text-bp-amber">Looking for: {p.lookingFor}</span>}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -2741,9 +2826,18 @@ function CommunitySection() {
       {step !== "why" && step !== "projects" && step !== "details" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {coreIdeas.map((idea, i) => (
-            <Card key={i} className="p-5">
-              <h3 className="font-semibold text-bp-text text-sm mb-1">{idea.title}</h3>
-              <p className="text-xs text-bp-muted leading-relaxed">{idea.desc}</p>
+            <Card key={i} className={`p-5 ${idea.onClick ? "cursor-pointer hover:border-bp-amber transition-colors" : ""}`}>
+              {idea.onClick ? (
+                <button onClick={idea.onClick} className="text-left w-full">
+                  <h3 className="font-semibold text-bp-text text-sm mb-1">{idea.title} <span className="text-bp-amber">→</span></h3>
+                  <p className="text-xs text-bp-muted leading-relaxed">{idea.desc}</p>
+                </button>
+              ) : (
+                <>
+                  <h3 className="font-semibold text-bp-text text-sm mb-1">{idea.title}</h3>
+                  <p className="text-xs text-bp-muted leading-relaxed">{idea.desc}</p>
+                </>
+              )}
             </Card>
           ))}
         </div>
